@@ -7,7 +7,7 @@ internal static class Autostart
 {
     private const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
     private const string RunOnceKey = @"Software\Microsoft\Windows\CurrentVersion\RunOnce";
-    private const string ValueName = "ControllerMerger";
+    private const string ValueName = "K26K Controller Merger";
 
     private static string Command => $"\"{Environment.ProcessPath}\" --autostart";
 

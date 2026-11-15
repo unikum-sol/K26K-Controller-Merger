@@ -6,7 +6,7 @@ namespace ControllerMerger.Core;
 public enum ThemePreference { System = 0, Light = 1, Dark = 2 }
 
 /// <summary>
-/// Persistente Benutzereinstellungen (JSON unter %APPDATA%\ControllerMerger\settings.json).
+/// Persistente Benutzereinstellungen (JSON unter %APPDATA%\K26KControllerMerger\settings.json).
 /// Fehlende Felder fallen auf Standardwerte zurück, ungültige Werte werden in
 /// <see cref="Normalize"/> korrigiert – eine kaputte Datei darf den Start nie verhindern.
 /// </summary>

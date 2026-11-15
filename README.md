@@ -1,61 +1,66 @@
-# ControllerMerger
+# K26K Controller Merger
 
-**Alle Gamepads als ein einziger Xbox 360 Controller.** ControllerMerger erzeugt über ViGEmBus dauerhaft einen virtuellen Xbox-360-Controller und führt die Eingaben aller angeschlossenen Controller darauf zusammen. Ideal, wenn du einem Kind am zweiten Controller helfen willst: Beide steuern gleichzeitig dieselbe Spielfigur.
+**All your gamepads as one single Xbox 360 controller.** K26K Controller Merger permanently creates a virtual Xbox 360 controller through ViGEmBus and merges the input of every connected controller into it. It's ideal for helping a child on a second controller: both of you steer the same character at the same time.
 
-![Übersicht](docs/design/screenshots/settings-overview-dark.png)
+![Overview](docs/design/screenshots/settings-overview-dark.png)
 
-## Funktionen
+## Features
 
-- **Immer da:** Der virtuelle Xbox 360 Controller existiert dauerhaft, auch ohne angeschlossenen physischen Controller.
-- **Vollautomatisch:** Neue Controller werden per Hotplug sofort erkannt und übernommen, eine Zuweisung ist nicht nötig.
-- **Echtes Merging:**
-  - Tasten: logisches ODER
-  - Trigger: der stärkere Wert gewinnt
-  - Analog-Sticks: größter Ausschlag, wahlweise *Ganzer Stick* (Standard) oder *Einzelne Achsen*
-  - Steuerkreuz: ODER, gegensätzliche Richtungen heben sich auf
-  - Totzone für Sticks und Trigger, wird pro Controller vor dem Merge angewendet, damit Drift eines unbenutzten Controllers nie gewinnt
-- **Vibration** aus Spielen geht an alle aktiven Controller.
-- **Einzelne Controller pausieren:** Sie bleiben verbunden, steuern aber nicht mit.
-- **Unterstützt** werden XInput (Xbox 360/One/Series), DualShock 4, DualSense, Switch Pro, Joy-Cons, generische DirectInput-/HID-Gamepads sowie Switch-2-Controller (experimentell, siehe unten).
-- **Niedrige Latenz:** Abfrage alle 1, 2, 4 (Standard) oder 8 ms über einen hochauflösenden Timer, bei gemessen ≈ 0,03 % CPU im Leerlauf.
-- **Tray-App:** Rechtsklick zeigt den Status, Doppelklick öffnet die Einstellungen. Hell- und Dunkelmodus folgen Windows.
-- **Autostart** lässt sich in den Einstellungen aktivieren.
+- **Always there:** the virtual Xbox 360 controller exists permanently, even when no physical controller is connected.
+- **Fully automatic:** new controllers are detected via hot-plug and take effect immediately. No manual assignment needed.
+- **True merging:**
+  - Buttons: logical OR
+  - Triggers: the stronger value wins
+  - Analog sticks: largest deflection wins, either per *whole stick* (default) or per *individual axis*
+  - D-pad: OR; opposite directions cancel each other out
+  - Dead zone for sticks and triggers, applied per controller *before* merging, so drift on an idle controller never wins
+- **Rumble** from games is forwarded to all active controllers.
+- **Pause individual controllers:** they stay connected but no longer steer.
+- **Supported controllers:** XInput (Xbox 360/One/Series), DualShock 4, DualSense, Switch Pro, Joy-Cons, generic DirectInput/HID gamepads, and Switch 2 controllers (experimental, see below).
+- **Low latency:** polling every 1, 2, 4 (default) or 8 ms with a high-resolution timer, at about 0.03 % CPU when idle (measured).
+- **Tray app:** right-click shows the status, double-click opens the settings. Light and dark mode follow Windows.
+- **Autostart** can be turned on in the settings.
 
-## Installation (für Nutzer)
+> The user interface is currently in German.
 
-1. `ControllerMerger.exe` an einen festen Ort kopieren, z. B. `%LOCALAPPDATA%\Programs\ControllerMerger\`. Eine .NET-Installation ist nicht nötig.
-2. Starten. Beim **ersten Start** prüft der Assistent, ob der Treiber **ViGEmBus** vorhanden ist. Fehlt er, wird er
-   - von GitHub heruntergeladen (fest gepinnte Version **1.22.0**),
-   - per **SHA-256 und digitaler Signatur** (Nefarius Software Solutions e.U.) geprüft,
-   - mit Administratorrechten installiert (Windows fragt nach).
-3. Falls Windows einen Neustart verlangt, startet ControllerMerger danach automatisch wieder.
-4. Fertig: Das Symbol erscheint im Infobereich der Taskleiste.
+## Installation (users)
 
-Fehlt der Treiber bei einem späteren Start oder ist er beschädigt, öffnet sich eine Reparaturansicht mit Lösungsschritten.
+1. Download `K26KControllerMerger.exe` from the [latest release](../../releases/latest) and put it in a permanent location, e.g. `%LOCALAPPDATA%\Programs\K26K Controller Merger\`. No .NET installation is required.
+2. Run it. On **first launch**, a setup wizard checks whether the **ViGEmBus** driver is installed. If it isn't, the wizard
+   - downloads it from GitHub (pinned version **1.22.0**),
+   - verifies it by **SHA-256 and digital signature** (Nefarius Software Solutions e.U.),
+   - installs it with administrator rights (Windows will ask).
+3. If Windows asks for a restart, K26K Controller Merger starts again automatically afterwards.
+4. Done: the icon appears in the notification area of the taskbar.
 
-## Bedienung
+If the driver is missing or broken on a later start, a repair view with step-by-step solutions opens.
 
-| Aktion | Wirkung |
+## Usage
+
+| Action | Result |
 |---|---|
-| **Rechtsklick** auf das Tray-Symbol | Status-Popup: virtueller Controller, verbundene Controller, „Beenden“ |
-| **Doppelklick** auf das Tray-Symbol | Einstellungen |
-| Zweiter Start der EXE | öffnet die Einstellungen der laufenden Instanz |
+| **Right-click** the tray icon | Status popup: virtual controller, connected controllers, quit |
+| **Double-click** the tray icon | Settings |
+| Starting the EXE a second time | Opens the settings of the running instance |
 
-**Tray-Symbol:** Ein gefüllter grüner Punkt heißt „Controller steuern mit“, ein Ring heißt „bereit, kein aktiver Controller“, ein roter Punkt mit „!“ zeigt ein Problem an, etwa einen fehlenden Treiber.
+**Tray icon:**
+- Filled green dot: controllers are steering.
+- Ring: ready, no active controller.
+- Red dot with "!": a problem, e.g. a missing driver.
 
-### Einstellungen
+### Settings
 
-| Seite | Einstellungen |
+| Page | Options |
 |---|---|
-| Übersicht | Status des virtuellen Controllers, „Gesteuert von“, Liste aller Controller mit Schalter zum Pausieren |
-| Eingabe | Stick-Zusammenführung, Totzone (Sticks/Trigger), Achsen umkehren, Abfrageintervall |
-| Allgemein | Vibration weitergeben, Mit Windows starten, Farbschema, technische Details, Hilfe, Logdatei |
+| Overview (Übersicht) | Virtual controller status, "controlled by", list of all controllers with a switch to pause each one |
+| Input (Eingabe) | Stick merge mode, dead zone (sticks/triggers), invert axes, polling interval |
+| General (Allgemein) | Forward rumble, start with Windows, color scheme, technical details, help, log file |
 
-Die Einstellungen liegen in `%APPDATA%\ControllerMerger\settings.json`, das Log in `%LOCALAPPDATA%\ControllerMerger\log.txt`.
+Settings are stored in `%APPDATA%\K26KControllerMerger\settings.json`, the log in `%LOCALAPPDATA%\K26KControllerMerger\log.txt`.
 
-## Bauen (für Entwickler)
+## Building (developers)
 
-**Voraussetzungen:** Windows 10/11 x64 und das [.NET 10 SDK](https://dotnet.microsoft.com/download).
+**Requirements:** Windows 10/11 x64 and the [.NET 10 SDK](https://dotnet.microsoft.com/download).
 
 ```bash
 dotnet build ControllerMerger.sln
@@ -69,58 +74,65 @@ dotnet test tests/ControllerMerger.Tests
 dotnet publish src/ControllerMerger -c Release -o artifacts/publish
 ```
 
-Das Ergebnis ist `artifacts/publish/ControllerMerger.exe`: eine self-contained Single-File-EXE (≈ 73 MB, komprimiert), die SDL3 bereits enthält.
+The result is `artifacts/publish/K26KControllerMerger.exe`, a self-contained single-file EXE (≈ 73 MB, compressed) with SDL3 included.
 
-### Entwickler-Modi
-
-```bash
-ControllerMerger.exe --snapshot artifacts/snapshots
-```
-Rendert alle Oberflächen in Hell und Dunkel als PNG, ohne Treiber oder Controller. Diese Grundlage nutzte der Design-Council.
+### Developer modes
 
 ```bash
-ControllerMerger.exe --export-icon src/ControllerMerger/Assets/AppIcon.ico
+K26KControllerMerger.exe --snapshot artifacts/snapshots
 ```
-Erzeugt das App-Symbol neu.
+Renders every screen in light and dark mode to PNG files, without a driver or controllers. This is what the design council reviewed.
 
-### SDL aktualisieren
+```bash
+K26KControllerMerger.exe --export-icon src/ControllerMerger/Assets/AppIcon.ico
+```
+Regenerates the app icon.
 
-SDL 3.4.20 (offizielles Release, zlib-Lizenz) liegt unter `lib/SDL3`. Für ein Update `$Version` und `$Sha256` in `tools/fetch-sdl.ps1` anpassen und das Skript ausführen:
+### Updating SDL
+
+SDL 3.4.20 (official release, zlib license) is vendored in `lib/SDL3`. To update, change `$Version` and `$Sha256` in `tools/fetch-sdl.ps1` and run:
 
 ```bash
 powershell -ExecutionPolicy Bypass -File tools/fetch-sdl.ps1
 ```
 
-## Fehlerbehebung
+## Troubleshooting
 
-| Problem | Lösung |
+| Problem | Solution |
 |---|---|
-| **Ein Spiel reagiert doppelt** | Das Spiel sieht neben dem virtuellen auch die echten Controller. Wähle im Spiel den virtuellen Xbox 360 Controller. Hilft das nicht, verbirg die echten Controller mit [HidHide](https://github.com/nefarius/HidHide). |
-| PS-/Switch-Controller wird nicht erkannt, während Steam läuft | Steam Input oder DS4Windows können den Controller exklusiv belegen. Deaktiviere Steam Input für das Gerät oder beende das andere Tool. |
-| „Der Controller-Treiber läuft nicht“ | Windows neu starten. Danach den Treiber über den Assistenten neu installieren und prüfen, ob die Speicher-Integrität oder ein Virenscanner ihn blockiert. |
-| Mehr als 3 Xbox-Controller | XInput kennt nur 4 Slots, und der virtuelle Controller belegt einen davon. |
-| SmartScreen-Warnung | Die EXE ist nicht signiert. Für eine Verteilung wird Code-Signing empfohlen. |
+| **A game reacts twice** | The game sees the real controllers in addition to the virtual one. Select the virtual Xbox 360 controller in the game. If that doesn't help, hide the real controllers with [HidHide](https://github.com/nefarius/HidHide). |
+| PlayStation/Switch controller not detected while Steam is running | Steam Input or DS4Windows can hold the device exclusively. Disable Steam Input for that device or close the other tool. |
+| "Der Controller-Treiber läuft nicht" (driver not running) | Restart Windows. Then reinstall the driver from the wizard and check whether Memory Integrity or an antivirus is blocking it. |
+| More than 3 Xbox controllers | XInput only has 4 slots, and the virtual controller uses one of them. |
+| SmartScreen warning | The EXE is not code-signed. |
 
-### Switch-2-Controller
-SDL 3.4 enthält einen HIDAPI-Treiber für Switch-2-Controller (ControllerMerger aktiviert ihn). Laut SDL-Release-Notes setzt die kabelgebundene Unterstützung libusb voraus, unter Windows also eine `libusb-1.0.dll` neben der EXE und einen WinUSB-Treiber für das Gerät. Mangels Hardware ist das ungetestet, die Unterstützung gilt daher als **experimentell**.
+### Switch 2 controllers
+SDL 3.4 includes a HIDAPI driver for Switch 2 controllers, and K26K Controller Merger enables it. According to the SDL release notes, wired support requires libusb. On Windows that means a `libusb-1.0.dll` next to the EXE and a WinUSB driver for the device. This is untested for lack of hardware, so support is **experimental**.
 
-## Architektur & Entscheidungen
+## Architecture and decisions
 
-- [Architektur](docs/ARCHITECTURE.md): Threads, Datenfluss, Schutz vor dem Feedback-Loop, Erweiterbarkeit
-- [Architektur-Council](docs/council/architecture-council.md): Sprache, Bibliotheken, UI-Framework, Distribution und Sicherheit, jeweils mit Bewertungen
-- [Design-Council](docs/council/design-council.md): drei Iterationsrunden bis 9/10 bei allen Mitgliedern
+- [Architecture](docs/ARCHITECTURE.md): threads, data flow, feedback-loop protection, extensibility
+- [Architecture council](docs/council/architecture-council.md): language, libraries, UI framework, distribution and security, with scores
+- [Design council](docs/council/design-council.md): three iteration rounds until every member rated 9/10
 
-**Kurzfassung:**
-- **C# / .NET 10 + WPF:** Nefarius.ViGEm.Client ist die Referenz-Implementierung, WPF ermöglicht ein vollständig eigenes Design-System.
-- **SDL3 über eine eigene, schlanke P/Invoke-Schicht:** breiteste Controller-Unterstützung (HIDAPI für PlayStation und Switch), volle Kontrolle über Hints und Version.
-- **Dedizierter Input-Thread** mit MMCSS, hochauflösendem Timer und allokationsfreiem Hot-Path.
-- **Self-contained Single-File:** Endnutzer brauchen nichts außer der EXE.
+The architecture and council documents are written in German.
 
-## Drittanbieter-Komponenten
+**In short:**
+- **C# / .NET 10 + WPF:** Nefarius.ViGEm.Client is the reference implementation, and WPF allows a fully custom design system.
+- **SDL3 through a thin, custom P/Invoke layer:** the broadest controller support (HIDAPI for PlayStation and Switch) and full control over hints and version.
+- **Dedicated input thread** with MMCSS, a high-resolution timer and an allocation-free hot path.
+- **Feedback-loop protection:** the virtual controller's own XInput slot is detected and never read back.
+- **Self-contained single file:** users need nothing but the EXE.
 
-| Komponente | Lizenz |
+## License
+
+K26K Controller Merger is licensed under the [GNU Affero General Public License v3.0](LICENSE).
+
+### Third-party components
+
+| Component | License |
 |---|---|
 | [SDL 3](https://libsdl.org) | zlib |
 | [Nefarius.ViGEm.Client](https://github.com/nefarius/ViGEm.NET) | MIT |
 | [Hardcodet.NotifyIcon.Wpf](https://github.com/hardcodet/wpf-notifyicon) | MIT |
-| [ViGEmBus](https://github.com/nefarius/ViGEmBus) (wird zur Laufzeit installiert, nicht mitgeliefert) | BSD-3-Clause |
+| [ViGEmBus](https://github.com/nefarius/ViGEmBus) (installed at runtime, not bundled) | BSD-3-Clause |

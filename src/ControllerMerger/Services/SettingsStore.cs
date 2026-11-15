@@ -13,7 +13,7 @@ internal sealed class SettingsStore : IDisposable
     private bool _dirty;
 
     public static string DefaultPath { get; } = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ControllerMerger", "settings.json");
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "K26KControllerMerger", "settings.json");
 
     public string FilePath { get; }
 

@@ -57,7 +57,7 @@ internal static class ThemeManager
 
         var dict = new ResourceDictionary
         {
-            Source = new Uri($"pack://application:,,,/ControllerMerger;component/Themes/{(dark ? "Dark" : "Light")}.xaml"),
+            Source = new Uri($"pack://application:,,,/Themes/{(dark ? "Dark" : "Light")}.xaml"),
         };
         var merged = app.Resources.MergedDictionaries;
         if (merged.Count > 0) merged[0] = dict;

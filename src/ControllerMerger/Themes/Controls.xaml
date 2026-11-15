@@ -1,5 +1,5 @@
 <!--
-  ControllerMerger Design-System: Typografie, Flächen und Controls.
+  K26K Controller Merger – Design-System: Typografie, Flächen und Controls.
   Regeln: 4-px-Raster, Radius 6 (Controls) / 10 (Karten) / 12 (Popups), eine Akzentfarbe,
   Farben ausschließlich über DynamicResource-Tokens (Themes/Dark.xaml, Themes/Light.xaml).
 -->

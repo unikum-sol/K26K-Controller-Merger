@@ -14,7 +14,7 @@ Vier Claude-Modelle mit festen, sich ergänzenden Rollen. Jedes Mitglied bewerte
 | Claude Fable | Kritischer Product-Design-Lead | Vergleich mit Top-Utilities, Charakter, Redundanz |
 
 ## Methode
-1. **Reproduzierbare Renderings:** `ControllerMerger.exe --snapshot <ordner>` rendert alle Oberflächen mit Beispieldaten in Hell und Dunkel (1,5-fach) als PNG, darunter Normal-, Leer-, Fehler-, Setup- und Tray-Zustände. Dafür braucht es weder Treiber noch Controller.
+1. **Reproduzierbare Renderings:** `K26KControllerMerger.exe --snapshot <ordner>` rendert alle Oberflächen mit Beispieldaten in Hell und Dunkel (1,5-fach) als PNG, darunter Normal-, Leer-, Fehler-, Setup- und Tray-Zustände. Dafür braucht es weder Treiber noch Controller.
 2. **Unabhängige Bewertung:** festes Antwortformat (Score, Stärken, Probleme mit konkretem Fix, „für 9/10 nötig“).
 3. **Konsolidierung:** Überschneidende Kritik wurde zu Maßnahmen zusammengeführt. Bei Zielkonflikten (z. B. „Beenden“ rot vs. neutral) wurde ein Kompromiss gewählt und dokumentiert.
 4. **Umsetzung → neue Renderings → nächste Runde.**

@@ -136,4 +136,4 @@ Laut Vorgabe entscheidet der Council nur über Architektur und Implementierung. 
 | Umgang mit Doppel-Eingaben (HidHide) | **Kein HidHide**, nur ein Hinweis |
 | Stick-Merge-Modus | **Umschaltbar, Standard „pro Stick“** (zusätzlich „pro Achse“ wie ursprünglich spezifiziert) |
 | Zusatzfunktionen | **Einzelne Controller pausieren** (keine Pro-Pad-Einstellungen, keine Live-Anzeige, keine Verbindungs-Benachrichtigungen) |
-| UI-Sprache / PR | **Deutsch, nur lokales Git** (PR-Beschreibung als Datei) |
+| UI-Sprache / PR | **Deutsch**, zunächst nur lokales Git; später: Projektname „K26K Controller Merger“, englische README, öffentliches GitHub-Repo mit Release |

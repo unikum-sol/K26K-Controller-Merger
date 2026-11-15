@@ -22,7 +22,7 @@ internal sealed class TrayController : IDisposable
     {
         _createPopup = createPopup;
         _openSettings = openSettings;
-        _icon = new TaskbarIcon { NoLeftClickDelay = true, ToolTipText = "ControllerMerger" };
+        _icon = new TaskbarIcon { NoLeftClickDelay = true, ToolTipText = "K26K Controller Merger" };
         _icon.TrayRightMouseUp += (_, _) => ShowPopup();
         _icon.TrayMouseDoubleClick += (_, _) => { ClosePopup(); _openSettings(); };
         ThemeManager.Changed += () => Update(_lastSnapshot, force: true);
@@ -54,13 +54,13 @@ internal sealed class TrayController : IDisposable
         {
             EngineState.Running => snap.Pads.Count switch
             {
-                0 => "ControllerMerger – kein Controller verbunden",
-                1 => "ControllerMerger – 1 Controller aktiv",
-                var n => $"ControllerMerger – {snap.ActivePadCount} von {n} Controllern aktiv",
+                0 => "K26K Controller Merger – kein Controller verbunden",
+                1 => "K26K Controller Merger – 1 Controller aktiv",
+                var n => $"K26K Controller Merger – {snap.ActivePadCount} von {n} Controllern aktiv",
             },
-            EngineState.DriverMissing => "ControllerMerger – ViGEmBus nicht verfügbar",
-            EngineState.Error => "ControllerMerger – Fehler",
-            _ => "ControllerMerger – startet …",
+            EngineState.DriverMissing => "K26K Controller Merger – ViGEmBus nicht verfügbar",
+            EngineState.Error => "K26K Controller Merger – Fehler",
+            _ => "K26K Controller Merger – startet …",
         };
     }
 

@@ -36,12 +36,12 @@ internal static class ViGEmInstaller
 
     public static async Task<string> DownloadAsync(IProgress<double> progress, CancellationToken ct)
     {
-        string dir = Path.Combine(Path.GetTempPath(), "ControllerMerger-Setup-" + Guid.NewGuid().ToString("N"));
+        string dir = Path.Combine(Path.GetTempPath(), "K26KControllerMerger-Setup-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(dir);
         string file = Path.Combine(dir, $"ViGEmBus_{Version}_x64_x86_arm64.exe");
 
         using var http = new HttpClient { Timeout = TimeSpan.FromMinutes(5) };
-        http.DefaultRequestHeaders.UserAgent.ParseAdd("ControllerMerger-Setup/1.0");
+        http.DefaultRequestHeaders.UserAgent.ParseAdd("K26KControllerMerger-Setup/1.0");
         using var response = await http.GetAsync(DownloadUri, HttpCompletionOption.ResponseHeadersRead, ct);
         response.EnsureSuccessStatusCode();
 

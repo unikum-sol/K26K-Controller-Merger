@@ -194,7 +194,7 @@ internal sealed class SetupViewModel : ObservableObject
         if (activeStep >= 0) SetActiveStep(activeStep);
         (Title, Message) = stage switch
         {
-            SetupStage.Welcome => ("Willkommen bei ControllerMerger",
+            SetupStage.Welcome => ("Willkommen bei K26K Controller Merger",
                 "Damit alle Controller als ein Xbox 360 Controller erscheinen, braucht Windows den kostenlosen Treiber ViGEmBus. " +
                 "Er wird jetzt einmalig eingerichtet und dauert weniger als eine Minute."),
             SetupStage.Repair => (Driver.Status switch
@@ -203,15 +203,15 @@ internal sealed class SetupViewModel : ObservableObject
                     DriverStatus.VersionMismatch => "Der Controller-Treiber ist veraltet",
                     _ => "Der Controller-Treiber läuft nicht",
                 },
-                "ControllerMerger braucht den Treiber ViGEmBus, um den virtuellen Xbox 360 Controller bereitzustellen. " +
+                "K26K Controller Merger braucht den Treiber ViGEmBus, um den virtuellen Xbox 360 Controller bereitzustellen. " +
                 (PreferRecheck ? "Er ist installiert, aber gerade nicht aktiv." : "Er lässt sich in einer Minute einrichten.")),
             SetupStage.Working => ("Treiber wird eingerichtet",
                 "Bestätige gleich die Windows-Abfrage und folge dem Installer. Danach geht es automatisch weiter."),
             SetupStage.Success => ("Alles bereit",
-                "ControllerMerger läuft ab jetzt im Infobereich der Taskleiste, unten rechts neben der Uhr."),
+                "K26K Controller Merger läuft ab jetzt im Infobereich der Taskleiste, unten rechts neben der Uhr."),
             SetupStage.RebootRequired => ("Neustart erforderlich",
                 "Der Treiber ist installiert, wird aber erst nach einem Neustart aktiv. " +
-                "ControllerMerger startet danach automatisch und ist sofort einsatzbereit."),
+                "K26K Controller Merger startet danach automatisch und ist sofort einsatzbereit."),
             _ => ("Einrichtung nicht abgeschlossen",
                 "Der Treiber konnte nicht eingerichtet werden. Du kannst es erneut versuchen."),
         };

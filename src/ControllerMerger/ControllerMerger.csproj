@@ -5,7 +5,7 @@
     <TargetFramework>net10.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <AssemblyName>ControllerMerger</AssemblyName>
+    <AssemblyName>K26KControllerMerger</AssemblyName>
     <RootNamespace>ControllerMerger</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ApplicationManifest>app.manifest</ApplicationManifest>

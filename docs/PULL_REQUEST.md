@@ -1,74 +1,74 @@
-# ControllerMerger 1.0: virtueller Xbox-360-Controller mit automatischem Merging aller Gamepads
+# K26K Controller Merger 1.0: one virtual Xbox 360 controller, every gamepad merged in
 
-## Zusammenfassung
+## Summary
 
-Dieser PR liefert ein Tray-Tool für Windows 10/11 x64. Es erzeugt über **ViGEmBus** dauerhaft **einen** virtuellen Xbox-360-Controller und führt die Eingaben **aller** angeschlossenen Gamepads darauf zusammen: Xbox, DualShock 4, DualSense, Switch Pro, Joy-Cons, HID/DirectInput und Switch 2 (experimentell). Damit können zwei Personen gleichzeitig eine Spielfigur steuern, etwa ein Elternteil, das einem Kind hilft.
+This change adds a tray tool for Windows 10/11 x64. It permanently creates **one** virtual Xbox 360 controller via **ViGEmBus** and merges the input of **every** connected gamepad into it: Xbox, DualShock 4, DualSense, Switch Pro, Joy-Cons, HID/DirectInput, and Switch 2 (experimental). Two people can then steer one character at the same time, for example a parent helping a child.
 
-## Inhalt
+## What's included
 
-| Bereich | Umsetzung |
+| Area | Implementation |
 |---|---|
-| Engine | Dedizierter Input-Thread (MMCSS „Games“, hochauflösender Waitable Timer, 1/2/4/8 ms), allokationsfreier Hot-Path, Report nur bei Änderung |
-| Merging | Tasten ODER, Trigger max., Sticks größter Ausschlag (*Ganzer Stick* / *Einzelne Achsen*), D-Pad mit SOCD-Bereinigung, Totzone pro Eingabe, Achsen-Inversion |
-| Eingabe | SDL 3.4.20 (offiziell, gepinnt) über eine eigene `LibraryImport`-Schicht; Hotplug per Events |
-| Ausgabe | Nefarius.ViGEm.Client; automatischer Reconnect; Rumble an alle aktiven Controller |
-| Feedback-Loop-Schutz | XInput-Backend erzwungen, eigener Slot (`UserIndex`) ausgefiltert, Quarantäne bis der Slot bekannt ist; per Log verifiziert |
-| Ersteinrichtung | Assistent: Download ViGEmBus 1.22.0 → SHA-256 + Authenticode (gepinnter Herausgeber) → elevated Install → Kontrolle → ggf. Neustart mit automatischem Wiederstart |
-| UI | Tray (Rechtsklick: Status-Popup, Doppelklick: Einstellungen), eigenes Design-System mit Hell/Dunkel nach Windows |
-| Einstellungen | Totzone, Stick-Modus, Achsen umkehren, Abfrageintervall, Vibration, Autostart, Farbschema, Controller einzeln pausieren |
-| Qualität | 20 Unit-Tests (Merge-Logik, Einstellungen), strukturiertes Logging, atomare Settings-Speicherung, Einzelinstanz |
-| Distribution | Self-contained Single-File-EXE (≈ 73 MB komprimiert), keine .NET-Installation nötig |
+| Engine | Dedicated input thread (MMCSS "Games", high-resolution waitable timer, 1/2/4/8 ms), allocation-free hot path, reports sent only on change |
+| Merging | Buttons OR, triggers max, sticks largest deflection (*whole stick* / *individual axes*), SOCD-cleaned d-pad, per-input dead zone, axis inversion |
+| Input | SDL 3.4.20 (official, pinned) through a custom `LibraryImport` layer; hot-plug via events |
+| Output | Nefarius.ViGEm.Client; automatic reconnect; rumble forwarded to all active controllers |
+| Feedback-loop protection | XInput backend enforced, own slot (`UserIndex`) filtered out, quarantine until the slot is known; verified in the log |
+| First-run setup | Wizard: download ViGEmBus 1.22.0 → SHA-256 + Authenticode (pinned publisher) → elevated install → verification → restart with automatic relaunch if needed |
+| UI | Tray (right-click status popup, double-click settings), custom design system with light/dark following Windows |
+| Settings | Dead zone, stick mode, invert axes, polling interval, rumble, autostart, color scheme, pause individual controllers |
+| Quality | 20 unit tests (merge logic, settings), structured logging, atomic settings writes, single instance |
+| Distribution | Self-contained single-file EXE (≈ 73 MB compressed), no .NET install needed |
+| License | GNU AGPL v3.0 |
 
-## Entscheidungsprozess
+## Decision process
 
-### Architektur-Council (Claude Opus · Sonnet · Haiku)
-Vollständiges Protokoll mit allen Bewertungen: [`docs/council/architecture-council.md`](council/architecture-council.md)
+### Architecture council (Claude Opus · Sonnet · Haiku)
+Full record with all scores (German): [`docs/council/architecture-council.md`](council/architecture-council.md)
 
-- **C# / .NET 10** (einstimmig, 8/9/9) vor Rust (4–5) und C++ (3–6)
-- **SDL3** (einstimmig 9) vor Windows.Gaming.Input und eigenen HID-Parsern
-- **Eigene P/Invoke-Schicht** (8 vs. 7). Bestätigt dadurch, dass ppy.SDL3-CS eine SDL-3.5-Entwicklerversion mitliefert
-- **WPF + Hardcodet** (9/9/8; Tray 2:1)
-- **Self-contained Single-File** (einstimmig)
-- **Installer-Sicherheit:** Version + SHA-256 + Signer gepinnt (einstimmig)
+- **C# / .NET 10** (unanimous; 8/9/9), ahead of Rust (4–5) and C++ (3–6)
+- **SDL3** (unanimous; 9), ahead of Windows.Gaming.Input and custom HID parsers
+- **Custom P/Invoke layer** (8 vs. 7). Confirmed when it turned out that ppy.SDL3-CS ships an SDL 3.5 development build
+- **WPF + Hardcodet** (9/9/8; tray 2:1)
+- **Self-contained single file** (unanimous)
+- **Installer security:** version, SHA-256 and signer pinned (unanimous)
 
-### Funktionsentscheidungen (vom Nutzer getroffen)
-- Kein HidHide, stattdessen ein Hinweis in den Einstellungen und in der README
-- Stick-Merge umschaltbar, Standard *Ganzer Stick*
-- Controller einzeln pausierbar (keine Pro-Pad-Einstellungen, keine Live-Anzeige, keine Verbindungs-Benachrichtigungen)
-- UI auf Deutsch, nur lokales Git
+### Feature decisions (made by the user)
+- No HidHide; a hint in the settings and the README instead
+- Stick merge mode switchable, default *whole stick*
+- Individual controllers can be paused (no per-controller settings, no live view, no connection notifications)
+- German UI; English README
 
-### Design-Council (Claude Opus · Sonnet · Haiku · Fable)
-Prozess und alle Runden: [`docs/council/design-council.md`](council/design-council.md)
+### Design council (Claude Opus · Sonnet · Haiku · Fable)
+Process and all rounds (German): [`docs/council/design-council.md`](council/design-council.md)
 
-| Runde | Opus | Sonnet | Haiku | Fable |
+| Round | Opus | Sonnet | Haiku | Fable |
 |---|---|---|---|---|
 | 1 | 7 | 7 | 6 | 6 |
-| 2 | 8 | 8,5 | 8 | 8 |
+| 2 | 8 | 8.5 | 8 | 8 |
 | **3** | **9** | **9** | **9** | **9** |
 
-| Vorher (R1) | Nachher (R3) |
+| Before (R1) | After (R3) |
 |---|---|
 | ![](design/screenshots/before-r1-settings-overview-dark.png) | ![](design/screenshots/settings-overview-dark.png) |
 
-## Verifikation
+## Verification
 
-- `dotnet test`: **20/20 bestanden**
-- Smoke-Test mit installiertem ViGEmBus (Debug- und Release-Single-File):
-  - `Virtueller Controller belegt XInput-Slot 1`
-  - `Controller verbunden: Xbox 360 Controller (… XInput=True/0, self=True)`: der eigene Pad wird korrekt ausgefiltert
-  - `Abfragerate: 250 Hz (Intervall 4 ms, High-Res-Timer)`
-  - ≈ 0,03 % CPU im Leerlauf, ≈ 78 MB Working Set
-- `--snapshot` rendert alle 27 Ansichten bzw. Zustände fehlerfrei in Hell und Dunkel
-- Build ohne Warnungen
+- `dotnet test`: **20/20 passed**
+- Build with no warnings
+- Smoke test against an installed ViGEmBus (debug and release single-file):
+  - virtual controller takes XInput slot 1
+  - SDL sees it as `XInput=True/0, self=True`, so the own pad is correctly filtered out
+  - polling at 250 Hz (4 ms, high-resolution timer)
+  - about 0.03 % CPU when idle, about 78 MB working set
+- `--snapshot` renders all 27 views/states in light and dark mode without errors
 
-### Nicht verifiziert (keine Hardware am Testsystem)
-- Merging und Rumble mit **echten** physischen Controllern (das Testsystem hatte keinen angeschlossen)
-- Installationspfad des Assistenten von Anfang bis Ende (ViGEmBus war bereits installiert; Download, Hash und Signatur wurden separat gegen das Original geprüft)
-- Switch-2-Controller
+### Not verified (no hardware on the test machine)
+- Merging and rumble with **real** physical controllers (none was connected to the test machine)
+- The setup wizard's full install path (ViGEmBus was already installed; download, hash and signature were checked separately against the original file)
+- Switch 2 controllers
 
-## Offene Punkte / Backlog
-- Design-Vorschläge für 10/10 (siehe [Runde 3](council/design/round-3.md#vorschläge-für-1010-bewusst-offen-gelassen))
-- Code-Signing der EXE gegen SmartScreen
-- Projektlizenz festlegen
+## Open items / backlog
+- Design suggestions for 10/10 (see [round 3](council/design/round-3.md))
+- Code signing the EXE to avoid SmartScreen warnings
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

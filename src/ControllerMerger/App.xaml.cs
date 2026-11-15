@@ -20,8 +20,8 @@ namespace ControllerMerger;
 /// </summary>
 public partial class App : Application
 {
-    private const string MutexName = @"Local\ControllerMerger.Instance";
-    private const string ShowEventName = @"Local\ControllerMerger.ShowSettings";
+    private const string MutexName = @"Local\K26KControllerMerger.Instance";
+    private const string ShowEventName = @"Local\K26KControllerMerger.ShowSettings";
 
     private Mutex? _mutex;
     private EventWaitHandle? _showEvent;

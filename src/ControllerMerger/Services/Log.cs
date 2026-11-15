@@ -3,7 +3,7 @@ using System.Text;
 namespace ControllerMerger.Services;
 
 /// <summary>
-/// Minimaler, threadsicherer Datei-Logger (%LOCALAPPDATA%\ControllerMerger\log.txt).
+/// Minimaler, threadsicherer Datei-Logger (%LOCALAPPDATA%\K26KControllerMerger\log.txt).
 /// Rotiert bei 1 MB. Logging darf die App nie zum Absturz bringen.
 /// </summary>
 internal static class Log
@@ -12,7 +12,7 @@ internal static class Log
     private const long MaxBytes = 1024 * 1024;
 
     public static string Directory { get; } =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ControllerMerger");
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "K26KControllerMerger");
 
     public static string FilePath { get; } = Path.Combine(Directory, "log.txt");
 

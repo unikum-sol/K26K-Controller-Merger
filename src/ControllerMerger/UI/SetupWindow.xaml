@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:ControllerMerger.UI"
         xmlns:vm="clr-namespace:ControllerMerger.UI.ViewModels"
-        Title="ControllerMerger – Einrichtung"
+        Title="K26K Controller Merger – Einrichtung"
         Width="540" Height="600" ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource Brush.Window}"
@@ -80,7 +80,7 @@
 
       <StackPanel Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Center">
         <Image x:Name="AppMark" Width="16" Height="16" />
-        <TextBlock Style="{StaticResource Text.Secondary}" Text="ControllerMerger · Einrichtung" Margin="10,0,0,0" VerticalAlignment="Center" />
+        <TextBlock Style="{StaticResource Text.Secondary}" Text="K26K Controller Merger · Einrichtung" Margin="10,0,0,0" VerticalAlignment="Center" />
       </StackPanel>
       <Button Style="{StaticResource Button.CaptionClose}" Content="&#xE8BB;" HorizontalAlignment="Right" VerticalAlignment="Top"
               Click="OnClose" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Schließen" />

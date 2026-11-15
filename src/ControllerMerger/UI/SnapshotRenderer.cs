@@ -12,7 +12,7 @@ using ControllerMerger.UI.ViewModels;
 namespace ControllerMerger.UI;
 
 /// <summary>
-/// Entwickler-Modus <c>ControllerMerger.exe --snapshot &lt;ordner&gt;</c>:
+/// Entwickler-Modus <c>K26KControllerMerger.exe --snapshot &lt;ordner&gt;</c>:
 /// rendert alle Oberflächen mit Beispieldaten in Hell und Dunkel als PNG (1,5-fach skaliert).
 /// Grundlage für die Bewertungsrunden des Design-Councils – reproduzierbar, ohne Treiber oder Controller.
 /// </summary>

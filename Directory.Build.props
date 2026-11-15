@@ -4,7 +4,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Version>1.0.0</Version>
-    <Authors>ControllerMerger</Authors>
-    <Product>ControllerMerger</Product>
+    <Authors>K26K</Authors>
+    <Product>K26K Controller Merger</Product>
   </PropertyGroup>
 </Project>
