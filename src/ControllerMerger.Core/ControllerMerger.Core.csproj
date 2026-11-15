@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Reine Logik ohne Windows-/Treiber-Abhängigkeiten: Merge, Deadzone, Einstellungen. Voll unit-testbar. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>ControllerMerger.Core</RootNamespace>
+  </PropertyGroup>
+</Project>

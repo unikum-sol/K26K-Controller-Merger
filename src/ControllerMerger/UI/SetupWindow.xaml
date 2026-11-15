@@ -1,0 +1,224 @@
+<Window x:Class="ControllerMerger.UI.SetupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:ControllerMerger.UI"
+        xmlns:vm="clr-namespace:ControllerMerger.UI.ViewModels"
+        Title="ControllerMerger – Einrichtung"
+        Width="540" Height="600" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource Brush.Window}"
+        UseLayoutRounding="True" TextOptions.TextFormattingMode="Ideal">
+
+  <WindowChrome.WindowChrome>
+    <WindowChrome CaptionHeight="40" ResizeBorderThickness="0" GlassFrameThickness="0"
+                  CornerRadius="0" UseAeroCaptionButtons="False" />
+  </WindowChrome.WindowChrome>
+
+  <Window.Resources>
+    <!-- Stepper: Kreis (Nummer → aktiv → Häkchen/Kreuz) mit Verbindungslinie zum nächsten Schritt -->
+    <DataTemplate x:Key="StepTemplate" DataType="{x:Type vm:SetupStep}">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="26" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Border x:Name="line" Width="1.5" HorizontalAlignment="Center" Margin="0,30,0,-2"
+                Background="{DynamicResource Brush.StrokeStrong}" />
+        <Border x:Name="circle" Width="26" Height="26" CornerRadius="13" BorderThickness="1.5" VerticalAlignment="Top"
+                BorderBrush="{DynamicResource Brush.ControlStroke}" Background="{DynamicResource Brush.Surface}">
+          <Grid>
+            <TextBlock x:Name="num" Style="{StaticResource Text}" FontSize="12" FontWeight="SemiBold" Text="{Binding Number}"
+                       Foreground="{DynamicResource Brush.TextSecondary}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <TextBlock x:Name="glyph" Style="{StaticResource Icon}" FontSize="11" Visibility="Collapsed" />
+          </Grid>
+        </Border>
+        <StackPanel Grid.Column="1" Margin="16,3,0,18">
+          <TextBlock x:Name="title" Style="{StaticResource Text.Strong}" FontWeight="Medium" Text="{Binding Title}" />
+          <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding Detail}" Margin="0,3,0,0" TextWrapping="Wrap" />
+          <ProgressBar x:Name="bar" Margin="0,10,0,0" Maximum="1" Value="{Binding Progress}"
+                       IsIndeterminate="{Binding Indeterminate}" Visibility="Collapsed" />
+        </StackPanel>
+      </Grid>
+      <DataTemplate.Triggers>
+        <DataTrigger Binding="{Binding IsLast}" Value="True">
+          <Setter TargetName="line" Property="Visibility" Value="Collapsed" />
+        </DataTrigger>
+        <DataTrigger Binding="{Binding State}" Value="Active">
+          <Setter TargetName="circle" Property="BorderBrush" Value="{DynamicResource Brush.Accent}" />
+          <Setter TargetName="circle" Property="Background" Value="{DynamicResource Brush.AccentSubtle}" />
+          <Setter TargetName="num" Property="Foreground" Value="{DynamicResource Brush.AccentText}" />
+          <Setter TargetName="bar" Property="Visibility" Value="Visible" />
+        </DataTrigger>
+        <DataTrigger Binding="{Binding State}" Value="Done">
+          <Setter TargetName="circle" Property="BorderBrush" Value="{DynamicResource Brush.Success}" />
+          <Setter TargetName="circle" Property="Background" Value="{DynamicResource Brush.Success}" />
+          <Setter TargetName="line" Property="Background" Value="{DynamicResource Brush.Success}" />
+          <Setter TargetName="num" Property="Visibility" Value="Collapsed" />
+          <Setter TargetName="glyph" Property="Visibility" Value="Visible" />
+          <Setter TargetName="glyph" Property="Text" Value="&#xE73E;" />
+          <Setter TargetName="glyph" Property="Foreground" Value="{DynamicResource Brush.Surface}" />
+        </DataTrigger>
+        <DataTrigger Binding="{Binding State}" Value="Failed">
+          <Setter TargetName="circle" Property="BorderBrush" Value="{DynamicResource Brush.Danger}" />
+          <Setter TargetName="circle" Property="Background" Value="{DynamicResource Brush.Danger}" />
+          <Setter TargetName="num" Property="Visibility" Value="Collapsed" />
+          <Setter TargetName="glyph" Property="Visibility" Value="Visible" />
+          <Setter TargetName="glyph" Property="Text" Value="&#xE711;" />
+          <Setter TargetName="glyph" Property="Foreground" Value="{DynamicResource Brush.Surface}" />
+        </DataTrigger>
+      </DataTemplate.Triggers>
+    </DataTemplate>
+  </Window.Resources>
+
+  <Border x:Name="Frame" Background="{DynamicResource Brush.Window}" BorderBrush="{DynamicResource Brush.StrokeStrong}">
+    <Grid x:Name="Root">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="40" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <StackPanel Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Center">
+        <Image x:Name="AppMark" Width="16" Height="16" />
+        <TextBlock Style="{StaticResource Text.Secondary}" Text="ControllerMerger · Einrichtung" Margin="10,0,0,0" VerticalAlignment="Center" />
+      </StackPanel>
+      <Button Style="{StaticResource Button.CaptionClose}" Content="&#xE8BB;" HorizontalAlignment="Right" VerticalAlignment="Top"
+              Click="OnClose" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Schließen" />
+
+      <!-- Inhalt -->
+      <StackPanel Grid.Row="1" Margin="36,12,36,0">
+        <Border x:Name="Hero" Width="52" Height="52" CornerRadius="14" HorizontalAlignment="Left"
+                Background="{DynamicResource Brush.AccentSubtle}">
+          <TextBlock x:Name="HeroGlyph" Style="{StaticResource Icon}" Text="{Binding HeroIcon}" FontSize="24"
+                     Foreground="{DynamicResource Brush.AccentText}" />
+        </Border>
+        <TextBlock Style="{StaticResource Text.PageTitle}" FontSize="22" Text="{Binding Title}" Margin="0,20,0,0" TextWrapping="Wrap" />
+        <TextBlock Style="{StaticResource Text.PageLead}" Text="{Binding Message}" Margin="0,8,0,0" />
+
+        <!-- Installation: Stepper (echte Abfolge) -->
+        <Border Style="{StaticResource Card}" Margin="0,24,0,0" Padding="20,20,20,2"
+                Visibility="{Binding ShowInstallSteps, Converter={StaticResource BoolToVis}}">
+          <ItemsControl ItemsSource="{Binding InstallSteps}" ItemTemplate="{StaticResource StepTemplate}" Focusable="False" />
+        </Border>
+
+        <!-- Reparatur: Alternativen, daher neutrale Liste ohne Nummern/Linien -->
+        <Border Style="{StaticResource Card.List}" Margin="0,24,0,0"
+                Visibility="{Binding ShowHints, Converter={StaticResource BoolToVis}}">
+          <StackPanel>
+            <TextBlock Style="{StaticResource Text.Strong}" Text="Das hilft meistens" Margin="20,16,20,4" />
+            <ItemsControl ItemsSource="{Binding RepairSteps}" Focusable="False" Margin="0,0,0,10">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Grid Margin="20,8">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="Auto" />
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Ellipse Style="{StaticResource Bullet}" Margin="2,7,14,0" />
+                    <StackPanel Grid.Column="1">
+                      <TextBlock Style="{StaticResource Text}" FontWeight="Medium" Text="{Binding Title}" />
+                      <TextBlock Style="{StaticResource Text.Wrap}" Text="{Binding Detail}" Margin="0,2,0,0" />
+                    </StackPanel>
+                  </Grid>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+
+        <!-- Erfolg: die zwei Gesten, die man sich merken muss -->
+        <Border Style="{StaticResource Card.List}" Margin="0,24,0,0"
+                Visibility="{Binding ShowGestures, Converter={StaticResource BoolToVis}}">
+          <StackPanel>
+            <Grid Margin="20,16">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <Border Width="40" Height="40" CornerRadius="10" Background="{DynamicResource Brush.SurfaceSubtle}">
+                <Image x:Name="TrayPreview" Width="20" Height="20" />
+              </Border>
+              <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
+                <TextBlock Style="{StaticResource Text.Strong}" Text="Das Symbol im Infobereich" />
+                <TextBlock Style="{StaticResource Text.Secondary}" Text="Ein grüner Punkt bedeutet: Controller steuern mit." Margin="0,2,0,0" />
+              </StackPanel>
+            </Grid>
+            <Border Style="{StaticResource Divider}" />
+            <Grid Margin="20,14,20,16">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+              <Border CornerRadius="6" Padding="10,3" Background="{DynamicResource Brush.SurfaceSubtle}" BorderBrush="{DynamicResource Brush.Stroke}"
+                      BorderThickness="1" HorizontalAlignment="Left" Margin="0,0,16,10">
+                <TextBlock Style="{StaticResource Text}" FontSize="12" FontWeight="SemiBold" Text="Rechtsklick" />
+              </Border>
+              <TextBlock Grid.Column="1" Style="{StaticResource Text}" Text="Status ansehen und beenden" VerticalAlignment="Center" Margin="0,0,0,10" />
+              <Border Grid.Row="1" CornerRadius="6" Padding="10,3" Background="{DynamicResource Brush.SurfaceSubtle}" BorderBrush="{DynamicResource Brush.Stroke}"
+                      BorderThickness="1" HorizontalAlignment="Left" Margin="0,0,16,0">
+                <TextBlock Style="{StaticResource Text}" FontSize="12" FontWeight="SemiBold" Text="Doppelklick" />
+              </Border>
+              <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource Text}" Text="Einstellungen öffnen" VerticalAlignment="Center" />
+            </Grid>
+          </StackPanel>
+        </Border>
+
+        <Border Margin="0,12,0,0" CornerRadius="8" Padding="14,10" Background="{DynamicResource Brush.DangerSubtle}"
+                Visibility="{Binding Error, Converter={StaticResource EmptyToCollapsed}}">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Style="{StaticResource Icon}" Text="&#xE7BA;" FontSize="14" Foreground="{DynamicResource Brush.Danger}"
+                       VerticalAlignment="Top" Margin="0,2,10,0" />
+            <TextBlock Grid.Column="1" Style="{StaticResource Text.Wrap}" Foreground="{DynamicResource Brush.Text}" Text="{Binding Error}" />
+          </Grid>
+        </Border>
+      </StackPanel>
+
+      <!-- Aktionen: immer an derselben Stelle -->
+      <Border Grid.Row="2" BorderBrush="{DynamicResource Brush.Stroke}" BorderThickness="0,1,0,0"
+              Background="{DynamicResource Brush.Footer}" Padding="36,16">
+        <Grid>
+          <Button Style="{StaticResource Button.Link}" HorizontalAlignment="Left" Content="{Binding LinkText}"
+                  Command="{Binding LinkCommand}" Margin="-8,0,0,0"
+                  Visibility="{Binding ShowLink, Converter={StaticResource BoolToVis}}" />
+          <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding StepCounterText}" VerticalAlignment="Center"
+                     Visibility="{Binding StepCounterText, Converter={StaticResource EmptyToCollapsed}}" />
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Style="{StaticResource Button}" Content="{Binding SecondaryText}" Command="{Binding SecondaryCommand}"
+                    Margin="0,0,10,0" Visibility="{Binding ShowSecondary, Converter={StaticResource BoolToVis}}" />
+            <!-- Primär: im Wartezustand getönt, mit Spinner und nicht klickbar – klar "läuft", nicht "kaputt" -->
+            <Button x:Name="PrimaryButton" Command="{Binding PrimaryCommand}" MinWidth="150" IsDefault="True">
+              <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource Button.Primary}">
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                      <Setter Property="Background" Value="{DynamicResource Brush.AccentSubtle}" />
+                      <Setter Property="Foreground" Value="{DynamicResource Brush.AccentText}" />
+                      <Setter Property="ui:Ui.HoverBackground" Value="{DynamicResource Brush.AccentSubtle}" />
+                      <Setter Property="ui:Ui.PressedBackground" Value="{DynamicResource Brush.AccentSubtle}" />
+                      <Setter Property="IsHitTestVisible" Value="False" />
+                      <Setter Property="Focusable" Value="False" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </Button.Style>
+              <StackPanel Orientation="Horizontal">
+                <Path Style="{StaticResource Spinner}" Margin="0,0,10,0" VerticalAlignment="Center"
+                      Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                      Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" />
+                <TextBlock Text="{Binding PrimaryText}" VerticalAlignment="Center" />
+              </StackPanel>
+            </Button>
+          </StackPanel>
+        </Grid>
+      </Border>
+    </Grid>
+  </Border>
+</Window>

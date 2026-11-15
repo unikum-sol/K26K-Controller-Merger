@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <AssemblyName>ControllerMerger</AssemblyName>
+    <RootNamespace>ControllerMerger</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon Condition="Exists('Assets\AppIcon.ico')">Assets\AppIcon.ico</ApplicationIcon>
+    <SatelliteResourceLanguages>de;en</SatelliteResourceLanguages>
+    <!-- Tray-Tool: Workstation-GC, kein Server-GC. Der Input-Thread allokiert im Hot-Path nicht. -->
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <!-- WPF erlaubt kein Trimming; deshalb ReadyToRun für schnellen Start statt Trim/AOT. -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <DebugType Condition="'$(Configuration)' == 'Release'">none</DebugType>
+    <SelfContained Condition="'$(_IsPublishing)' == 'true'">true</SelfContained>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Nefarius.ViGEm.Client" Version="1.21.256" />
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ControllerMerger.Core\ControllerMerger.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Offizielles SDL 3.4.x (zlib-Lizenz), gepinnt über tools/fetch-sdl.ps1 -->
+    <Content Include="..\..\lib\SDL3\SDL3.dll" Link="SDL3.dll" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="..\..\lib\SDL3\LICENSE.txt" Link="licenses\SDL3-LICENSE.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Resource Include="Assets\AppIcon.ico" Condition="Exists('Assets\AppIcon.ico')" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System.IO" />
+  </ItemGroup>
+
+</Project>
