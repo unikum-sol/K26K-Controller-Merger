@@ -354,10 +354,10 @@
 
   <!-- Schalter mit "Ein"/"Aus"-Beschriftung wie in den Windows-Einstellungen (eindeutig auch für Laien) -->
   <Style x:Key="Toggle.OnOff" TargetType="CheckBox" BasedOn="{StaticResource Toggle}">
-    <Setter Property="Content" Value="Aus" />
+    <Setter Property="Content" Value="{ui:T Off}" />
     <Style.Triggers>
       <Trigger Property="IsChecked" Value="True">
-        <Setter Property="Content" Value="Ein" />
+        <Setter Property="Content" Value="{ui:T On}" />
       </Trigger>
     </Style.Triggers>
   </Style>

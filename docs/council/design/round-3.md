@@ -1,34 +1,34 @@
-# Design-Council – Runde 3 (Abschluss)
+# Design council – round 3 (final)
 
-| Mitglied | Rolle | R1 | R2 | **R3** |
+| Member | Role | R1 | R2 | **R3** |
 |---|---|---|---|---|
-| Claude Opus | Senior Visual Designer | 7 | 8 | **9** |
-| Claude Sonnet | UX & Informationsarchitektur | 7 | 8,5 | **9** |
-| Claude Haiku | Accessibility & Augenkomfort | 6 | 8 | **9** |
-| Claude Fable | Kritischer Product-Design-Lead | 6 | 8 | **9** |
+| Claude Opus | Senior visual designer | 7 | 8 | **9** |
+| Claude Sonnet | UX & information architecture | 7 | 8.5 | **9** |
+| Claude Haiku | Accessibility & eye comfort | 6 | 8 | **9** |
+| Claude Fable | Critical product design lead | 6 | 8 | **9** |
 
-**Abbruchkriterium erfüllt:** Alle Mitglieder bewerten die Designqualität mit mindestens 9/10. Damit ist auch die schwächere Schwelle aus der Aufgabenstellung (7/10) deutlich übertroffen.
+**Exit criterion met:** all members rate the design quality at least 9/10. This also clearly exceeds the weaker threshold in the brief (7/10).
 
-## Stimmen (Auszug)
+## Voices (excerpts, translated)
 
-- **Opus:** „Das System ist geschlossen. Es gibt ein Raster, eine Akzentfamilie, und Dark wie Light sind gleichwertig ausgearbeitet.“
-- **Sonnet:** „Zustandskommunikation widerspruchsfrei und über alle Flächen einheitlich. Jeder Fehler hat genau eine Meldung und eine Handlung.“
-- **Haiku:** „Alle Zustände sind über Form, Text und Farbe zugleich kodiert. Die Tray-Symbole sind pixelgenau und bleiben bei 16 px erkennbar.“
-- **Fable:** „Die 360-Kachel neben den PS/XB/NS-Monogrammen ergibt ein eigenes, sofort lesbares Zeichensystem. Das Setup ist auf Top-Utility-Niveau.“
+- **Opus:** "The system is closed. There is one grid, one accent family, and dark and light are equally well worked out."
+- **Sonnet:** "State communication is free of contradictions and consistent across all surfaces. Every error has exactly one message and one action."
+- **Haiku:** "All states are encoded by shape, text and color at once. The tray icons are pixel-precise and stay recognizable at 16 px."
+- **Fable:** "The 360 tile next to the PS/XB/NS monograms forms its own, instantly readable sign system. The setup is at top-utility level."
 
-## Vorschläge für 10/10 (bewusst offen gelassen)
+## Suggestions for 10/10 (deliberately left open)
 
-Diese Punkte wurden von den Mitgliedern ausdrücklich als Weg *über* die 9 hinaus genannt. Sie sind nicht nötig, um das Abbruchkriterium zu erfüllen, und bleiben als Backlog dokumentiert:
+Members explicitly named these points as the way *beyond* 9. They are not required for the exit criterion and remain documented as a backlog:
 
-| Punkt | Von |
+| Point | From |
 |---|---|
-| Tray „Bereit“ bei 16 px als Pause-Doppelstrich statt Ring | Opus |
-| Fehlerseite: Controller-Liste gedimmt statt ausgeblendet (keine Leerfläche) | Opus, Sonnet |
-| „360“-Kachel im Dark-Theme getönt statt voll gefüllt; im Fehlerfall entsättigt | Opus, Fable |
-| Ein Vokabular für den Pad-Schalter (Ein/Aus vs. Pausiert) | Fable |
-| Stick-Karte entschlacken (nur die gewählte Option erklären) bzw. gleiche Textfarbe für beide Optionen | Fable, Haiku, Sonnet |
-| Überschrift „Totzone“ wieder als Substantiv, Erklärung in den Zeilentext | Opus |
-| Popup-Fehler: Warn-Symbol in 32-DIP-Kachel (Fluchtlinie) | Opus |
-| „Beenden“-Symbol neutral wie der Text (Gegenposition Haiku: roter Hinweis) | Fable |
-| Sichtbarer Tastaturfokus als eigener Screenshot belegen (Fokusring ist implementiert) | Haiku |
-| Reparatur: „Treiber neu installieren“ nur einmal (im Listenpunkt) | Fable, Sonnet |
+| Tray "Ready" at 16 px as a pause double bar instead of a ring | Opus |
+| Error page: controller list dimmed instead of hidden (no empty area) | Opus, Sonnet |
+| "360" tile tinted rather than fully filled in dark mode; desaturated on error | Opus, Fable |
+| One vocabulary for the pad switch (On/Off vs. Paused) | Fable |
+| Slim down the stick card (explain only the selected option) or use the same text color for both options | Fable, Haiku, Sonnet |
+| "Dead zone" heading as a noun again, explanation moved into the row text | Opus |
+| Popup error: warning icon in a 32 DIP tile (alignment line) | Opus |
+| "Quit" icon neutral like the text (counter-position Haiku: red cue) | Fable |
+| Show visible keyboard focus in its own screenshot (focus ring is implemented) | Haiku |
+| Repair: "Reinstall driver" only once (in the list item) | Fable, Sonnet |

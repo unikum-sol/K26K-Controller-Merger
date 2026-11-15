@@ -343,7 +343,7 @@ public sealed class InputService : IDisposable
             if (!Sdl.SDL_Init(Sdl.InitGamepad))
             {
                 _state = EngineState.Error;
-                _message = "SDL konnte nicht gestartet werden: " + Sdl.LastError;
+                _message = UI.Loc.F("EngSdlFailed", Sdl.LastError);
                 Log.Error(_message);
                 return;
             }
@@ -369,7 +369,7 @@ public sealed class InputService : IDisposable
         catch (DllNotFoundException ex)
         {
             _state = EngineState.Error;
-            _message = "SDL3.dll fehlt neben der Anwendung.";
+            _message = UI.Loc.T("EngSdlMissing");
             Log.Error(_message, ex);
         }
     }

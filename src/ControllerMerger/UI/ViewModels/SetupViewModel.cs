@@ -47,9 +47,9 @@ internal sealed class SetupViewModel : ObservableObject
     public SetupViewModel(DriverInfo driver, bool firstRun)
     {
         InstallSteps = Numbered(
-            ("Herunterladen", $"ViGEmBus {ViGEmInstaller.Version} von GitHub (rund 6 MB)"),
-            ("Echtheit prüfen", "Digitale Signatur und Prüfsumme"),
-            ("Installieren", "Windows fragt nach Administratorrechten"));
+            (Loc.T("StepDownload"), Loc.F("StepDownloadDetail", ViGEmInstaller.Version)),
+            (Loc.T("StepVerify"), Loc.T("StepVerifyDetail")),
+            (Loc.T("StepInstall"), Loc.T("StepInstallDetail")));
         PrimaryCommand = new RelayCommand(OnPrimary);
         SecondaryCommand = new RelayCommand(OnSecondary);
         LinkCommand = new RelayCommand(OnLink, () => Stage != SetupStage.Working);
@@ -70,15 +70,15 @@ internal sealed class SetupViewModel : ObservableObject
     public ObservableCollection<SetupStep> RepairSteps => Driver.Status switch
     {
         DriverStatus.NotInstalled => Numbered(
-            ("Treiber installieren", $"ViGEmBus {ViGEmInstaller.Version} wird geladen, geprüft und installiert."),
-            ("Bei Bedarf neu starten", "Windows meldet es, falls ein Neustart nötig ist.")),
+            (Loc.T("HintInstall"), Loc.F("HintInstallDetail", ViGEmInstaller.Version)),
+            (Loc.T("HintRebootIfNeeded"), Loc.T("HintRebootIfNeededDetail"))),
         DriverStatus.VersionMismatch => Numbered(
-            ("Treiber aktualisieren", $"Installiert die passende Version {ViGEmInstaller.Version}."),
-            ("Windows neu starten", "Danach ist der neue Treiber aktiv.")),
+            (Loc.T("HintUpdate"), Loc.F("HintUpdateDetail", ViGEmInstaller.Version)),
+            (Loc.T("HintReboot"), Loc.T("HintRebootAfterUpdate"))),
         _ => Numbered(
-            ("Windows neu starten", "Ein frisch installierter Treiber wird oft erst danach aktiv."),
-            ("Treiber neu installieren", "Hilft, wenn der Treiber beschädigt ist."),
-            ("Sicherheitssoftware prüfen", "Virenscanner oder Speicher-Integrität können Treiber blockieren.")),
+            (Loc.T("HintReboot"), Loc.T("HintRebootDetail")),
+            (Loc.T("HintReinstall"), Loc.T("HintReinstallDetail")),
+            (Loc.T("HintSecurity"), Loc.T("HintSecurityDetail"))),
     };
 
     /// <summary>Stepper (Abfolge) nur für die Installation; Reparatur zeigt Alternativen als neutrale Liste.</summary>
@@ -88,7 +88,7 @@ internal sealed class SetupViewModel : ObservableObject
 
     /// <summary>"Schritt 2 von 3" – nur während der Installation.</summary>
     public string StepCounterText => Stage == SetupStage.Working && _activeStep is >= 0 and < 3
-        ? $"Schritt {_activeStep + 1} von {InstallSteps.Count}"
+        ? Loc.F("StepCounter", _activeStep + 1, InstallSteps.Count)
         : "";
 
     public DriverInfo Driver { get; private set; }
@@ -113,26 +113,26 @@ internal sealed class SetupViewModel : ObservableObject
 
     public string PrimaryText => Stage switch
     {
-        SetupStage.Welcome => "Treiber installieren",
-        SetupStage.Repair => PreferRecheck ? "Erneut prüfen" : "Treiber installieren",
+        SetupStage.Welcome => Loc.T("BtnInstallDriver"),
+        SetupStage.Repair => Loc.T(PreferRecheck ? "BtnRecheck" : "BtnInstallDriver"),
         SetupStage.Working => _activeStep switch
         {
-            0 => "Wird heruntergeladen …",
-            1 => "Wird geprüft …",
-            _ => "Wird installiert …",
+            0 => Loc.T("BtnDownloading"),
+            1 => Loc.T("BtnVerifying"),
+            _ => Loc.T("BtnInstalling"),
         },
-        SetupStage.Success => "Fertig",
-        SetupStage.RebootRequired => "Jetzt neu starten",
-        _ => "Erneut versuchen",
+        SetupStage.Success => Loc.T("BtnDone"),
+        SetupStage.RebootRequired => Loc.T("BtnRebootNow"),
+        _ => Loc.T("BtnRetry"),
     };
 
     public string SecondaryText => Stage switch
     {
-        SetupStage.Working => "Abbrechen",
-        SetupStage.RebootRequired => "Später",
+        SetupStage.Working => Loc.T("BtnCancel"),
+        SetupStage.RebootRequired => Loc.T("BtnLater"),
         SetupStage.Success => "",
-        SetupStage.Welcome => "Abbrechen",
-        _ => "Schließen",
+        SetupStage.Welcome => Loc.T("BtnCancel"),
+        _ => Loc.T("Close"),
     };
 
     public bool ShowSecondary => SecondaryText.Length > 0;
@@ -140,8 +140,8 @@ internal sealed class SetupViewModel : ObservableObject
     /// <summary>Dezenter Text-Link links unten für die jeweils zweitwichtigste Lösung.</summary>
     public string LinkText => Stage switch
     {
-        SetupStage.Repair => PreferRecheck ? "Treiber neu installieren" : "Erneut prüfen",
-        SetupStage.Failed => "Erneut prüfen",
+        SetupStage.Repair => Loc.T(PreferRecheck ? "HintReinstall" : "BtnRecheck"),
+        SetupStage.Failed => Loc.T("BtnRecheck"),
         _ => "",
     };
 
@@ -194,26 +194,18 @@ internal sealed class SetupViewModel : ObservableObject
         if (activeStep >= 0) SetActiveStep(activeStep);
         (Title, Message) = stage switch
         {
-            SetupStage.Welcome => ("Willkommen bei K26K Controller Merger",
-                "Damit alle Controller als ein Xbox 360 Controller erscheinen, braucht Windows den kostenlosen Treiber ViGEmBus. " +
-                "Er wird jetzt einmalig eingerichtet und dauert weniger als eine Minute."),
-            SetupStage.Repair => (Driver.Status switch
+            SetupStage.Welcome => (Loc.T("SuWelcomeTitle"), Loc.T("SuWelcomeText")),
+            SetupStage.Repair => (Loc.T(Driver.Status switch
                 {
-                    DriverStatus.NotInstalled => "Der Controller-Treiber fehlt",
-                    DriverStatus.VersionMismatch => "Der Controller-Treiber ist veraltet",
-                    _ => "Der Controller-Treiber läuft nicht",
-                },
-                "K26K Controller Merger braucht den Treiber ViGEmBus, um den virtuellen Xbox 360 Controller bereitzustellen. " +
-                (PreferRecheck ? "Er ist installiert, aber gerade nicht aktiv." : "Er lässt sich in einer Minute einrichten.")),
-            SetupStage.Working => ("Treiber wird eingerichtet",
-                "Bestätige gleich die Windows-Abfrage und folge dem Installer. Danach geht es automatisch weiter."),
-            SetupStage.Success => ("Alles bereit",
-                "K26K Controller Merger läuft ab jetzt im Infobereich der Taskleiste, unten rechts neben der Uhr."),
-            SetupStage.RebootRequired => ("Neustart erforderlich",
-                "Der Treiber ist installiert, wird aber erst nach einem Neustart aktiv. " +
-                "K26K Controller Merger startet danach automatisch und ist sofort einsatzbereit."),
-            _ => ("Einrichtung nicht abgeschlossen",
-                "Der Treiber konnte nicht eingerichtet werden. Du kannst es erneut versuchen."),
+                    DriverStatus.NotInstalled => "SuRepairMissing",
+                    DriverStatus.VersionMismatch => "SuRepairOutdated",
+                    _ => "SuRepairInactive",
+                }),
+                Loc.T("SuRepairText") + " " + Loc.T(PreferRecheck ? "SuRepairInactiveText" : "SuRepairFixText")),
+            SetupStage.Working => (Loc.T("SuWorkingTitle"), Loc.T("SuWorkingText")),
+            SetupStage.Success => (Loc.T("SuSuccessTitle"), Loc.T("SuSuccessText")),
+            SetupStage.RebootRequired => (Loc.T("SuRebootTitle"), Loc.T("SuRebootText")),
+            _ => (Loc.T("SuFailedTitle"), Loc.T("SuFailedText")),
         };
         Stage = stage;
         Raise(nameof(PrimaryText));
@@ -259,7 +251,7 @@ internal sealed class SetupViewModel : ObservableObject
         Driver = DriverCheck.Check();
         Raise(nameof(RepairSteps));
         if (Driver.IsOk) GoTo(SetupStage.Success);
-        else GoTo(Stage, "Der Treiber ist weiterhin nicht verfügbar. " + Driver.Detail);
+        else GoTo(Stage, Loc.T("ErrStillUnavailable") + " " + Driver.Detail);
     }
 
     private async Task RunAsync()
@@ -289,10 +281,10 @@ internal sealed class SetupViewModel : ObservableObject
             install.Indeterminate = true;
             int code = await ViGEmInstaller.RunElevatedAsync(installer, ct);
             if (code == ViGEmInstaller.ExitUserCancel)
-                throw new OperationCanceledException("Die Installation wurde im Installer abgebrochen.");
+                throw new SetupCancelledException(Loc.T("ErrInstallerCancelled"));
 
             // 4) Kontrolle: Treiber kann einige Sekunden brauchen, bis er erreichbar ist.
-            install.Detail = "Treiber wird geprüft …";
+            install.Detail = Loc.T("StepChecking");
             DriverInfo info = DriverCheck.Check();
             for (int i = 0; i < 20 && !info.IsOk && !ct.IsCancellationRequested; i++)
             {
@@ -301,7 +293,7 @@ internal sealed class SetupViewModel : ObservableObject
             }
             Driver = info;
             SetActiveStep(3); // alle erledigt
-            install.Detail = "Abgeschlossen";
+            install.Detail = Loc.T("StepDone");
 
             if (info.IsOk && code != ViGEmInstaller.ExitRebootRequired)
             {
@@ -315,19 +307,19 @@ internal sealed class SetupViewModel : ObservableObject
             else
             {
                 FailActive();
-                GoTo(SetupStage.Failed, $"Der Installer meldete Code {code}, der Treiber ist aber nicht erreichbar. {info.Detail}");
+                GoTo(SetupStage.Failed, Loc.F("ErrInstallerCode", code) + " " + info.Detail);
             }
         }
         catch (OperationCanceledException ex)
         {
             FailActive();
-            GoTo(SetupStage.Failed, ex.Message.StartsWith("Die ", StringComparison.Ordinal) ? ex.Message : "Die Einrichtung wurde abgebrochen.");
+            GoTo(SetupStage.Failed, ex is SetupCancelledException ? ex.Message : Loc.T("ErrCancelled"));
         }
         catch (HttpRequestException ex)
         {
             Log.Error("Download", ex);
             FailActive();
-            GoTo(SetupStage.Failed, "Der Download ist fehlgeschlagen. Bitte prüfe die Internetverbindung.");
+            GoTo(SetupStage.Failed, Loc.T("ErrDownload"));
         }
         catch (InstallerVerificationException ex)
         {

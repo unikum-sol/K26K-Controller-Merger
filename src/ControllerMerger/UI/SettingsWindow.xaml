@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:ControllerMerger.UI"
-        Title="K26K Controller Merger – Einstellungen"
+        Title="{ui:T SettingsTitle}"
         Width="920" Height="680" MinWidth="780" MinHeight="540"
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource Brush.Window}"
@@ -30,7 +30,7 @@
             <TextBlock x:Name="detail" Style="{StaticResource Text.Secondary}" Text="{Binding Detail}" Margin="0,3,0,0" />
           </StackPanel>
           <CheckBox Grid.Column="2" Style="{StaticResource Toggle.OnOff}" IsChecked="{Binding IsEnabled}"
-                    AutomationProperties.Name="{Binding Name}" ToolTip="Eingaben dieses Controllers übernehmen" />
+                    AutomationProperties.Name="{Binding Name}" ToolTip="{ui:T PadToggleTip}" />
         </Grid>
       </StackPanel>
       <DataTemplate.Triggers>
@@ -78,11 +78,11 @@
 
       <DockPanel Grid.Row="1" Margin="12,14,12,16" LastChildFill="False">
         <StackPanel DockPanel.Dock="Top">
-          <RadioButton x:Name="NavOverview" Style="{StaticResource NavItem}" ui:Ui.Icon="&#xE80F;" Content="Übersicht"
+          <RadioButton x:Name="NavOverview" Style="{StaticResource NavItem}" ui:Ui.Icon="&#xE80F;" Content="{ui:T NavOverview}"
                        GroupName="nav" IsChecked="True" Checked="OnNavChecked" />
-          <RadioButton x:Name="NavInput" Style="{StaticResource NavItem}" ui:Ui.Icon="&#xE7FC;" Content="Eingabe"
+          <RadioButton x:Name="NavInput" Style="{StaticResource NavItem}" ui:Ui.Icon="&#xE7FC;" Content="{ui:T NavInput}"
                        GroupName="nav" Checked="OnNavChecked" />
-          <RadioButton x:Name="NavGeneral" Style="{StaticResource NavItem}" ui:Ui.Icon="&#xE713;" Content="Allgemein"
+          <RadioButton x:Name="NavGeneral" Style="{StaticResource NavItem}" ui:Ui.Icon="&#xE713;" Content="{ui:T NavGeneral}"
                        GroupName="nav" Checked="OnNavChecked" />
         </StackPanel>
         <TextBlock DockPanel.Dock="Bottom" Style="{StaticResource Text.Caption}" Text="{Binding AppVersionText}" Margin="14,0,0,0" />
@@ -91,9 +91,9 @@
       <!-- ===================================================== Titelleiste rechts -->
       <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
         <Button Style="{StaticResource Button.Caption}" Content="&#xE921;" Click="OnMinimize"
-                WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Minimieren" />
+                WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="{ui:T Minimize}" />
         <Button Style="{StaticResource Button.CaptionClose}" Content="&#xE8BB;" Click="OnClose"
-                WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Schließen" />
+                WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="{ui:T Close}" />
       </StackPanel>
 
       <!-- ===================================================== Inhalt (eine feste Breite für alle Seiten) -->
@@ -103,9 +103,9 @@
 
           <!-- ================================================= Übersicht -->
           <StackPanel x:Name="PageOverview">
-            <TextBlock Style="{StaticResource Text.PageTitle}" Text="Übersicht" />
+            <TextBlock Style="{StaticResource Text.PageTitle}" Text="{ui:T NavOverview}" />
             <TextBlock Style="{StaticResource Text.PageLead}"
-                       Text="Alle angeschlossenen Controller steuern gemeinsam einen virtuellen Xbox 360 Controller." />
+                       Text="{ui:T OvLead}" />
 
             <!-- Hero: N Controller → 1 virtueller Controller -->
             <Border Style="{StaticResource Card.List}" Margin="0,24,0,0">
@@ -122,7 +122,7 @@
                                Foreground="{DynamicResource Brush.OnAccent}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                   </Border>
                   <StackPanel Grid.Column="1" Margin="16,0,12,0" VerticalAlignment="Center">
-                    <TextBlock Style="{StaticResource Text.CardTitle}" Text="Virtueller Xbox 360 Controller" />
+                    <TextBlock Style="{StaticResource Text.CardTitle}" Text="{ui:T VirtualController}" />
                     <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding VirtualDetail}" Margin="0,3,0,0" />
                   </StackPanel>
                   <ui:StatusBadge Grid.Column="2" Kind="{Binding StatusKind}" Text="{Binding StatusText}" />
@@ -130,7 +130,7 @@
 
                 <Border Style="{StaticResource Divider}" Visibility="{Binding ShowContent, Converter={StaticResource BoolToVis}}" />
                 <StackPanel Margin="20,14,20,10" Visibility="{Binding ShowContent, Converter={StaticResource BoolToVis}}">
-                  <TextBlock Style="{StaticResource Text.Secondary}" Text="Gesteuert von" Margin="0,0,0,10" />
+                  <TextBlock Style="{StaticResource Text.Secondary}" Text="{ui:T OvControlledBy}" Margin="0,0,0,10" />
                   <ItemsControl ItemsSource="{Binding Pads}" ItemTemplate="{StaticResource PadChip}" Focusable="False"
                                 Visibility="{Binding HasActivePads, Converter={StaticResource BoolToVis}}">
                     <ItemsControl.ItemsPanel>
@@ -149,7 +149,7 @@
                     </ItemsControl.ItemContainerStyle>
                   </ItemsControl>
                   <TextBlock Style="{StaticResource Text}" Foreground="{DynamicResource Brush.TextTertiary}" Margin="0,0,0,8"
-                             Text="Noch kein aktiver Controller"
+                             Text="{ui:T OvNoActive}"
                              Visibility="{Binding HasActivePads, Converter={StaticResource BoolToVis}, ConverterParameter=invert}" />
                 </StackPanel>
 
@@ -166,7 +166,7 @@
                     <TextBlock Style="{StaticResource Text.Strong}" Text="{Binding ProblemTitle}" />
                     <TextBlock Style="{StaticResource Text.Wrap}" Text="{Binding ProblemText}" Margin="0,3,0,0" />
                   </StackPanel>
-                  <Button Grid.Column="2" Style="{StaticResource Button.Primary}" Content="Treiber einrichten"
+                  <Button Grid.Column="2" Style="{StaticResource Button.Primary}" Content="{ui:T SetupDriver}"
                           Command="{Binding RepairDriverCommand}" VerticalAlignment="Center"
                           Visibility="{Binding CanRepair, Converter={StaticResource BoolToVis}}" />
                 </Grid>
@@ -176,7 +176,7 @@
             <!-- Physische Controller (im Fehlerzustand ausgeblendet: dann zählt nur die eine Handlung oben) -->
             <StackPanel Visibility="{Binding ShowContent, Converter={StaticResource BoolToVis}}">
             <Grid>
-              <TextBlock Style="{StaticResource Text.Section}" Text="Deine Controller" />
+              <TextBlock Style="{StaticResource Text.Section}" Text="{ui:T YourControllers}" />
               <TextBlock Style="{StaticResource Text.Caption}" Text="{Binding PadsSummary}" HorizontalAlignment="Right"
                          VerticalAlignment="Bottom" Margin="0,0,2,11" />
             </Grid>
@@ -191,34 +191,34 @@
                 <Border Width="44" Height="44" CornerRadius="22" Background="{DynamicResource Brush.SurfaceSubtle}" HorizontalAlignment="Center">
                   <TextBlock Style="{StaticResource Icon}" Text="&#xE7FC;" FontSize="18" Foreground="{DynamicResource Brush.TextTertiary}" />
                 </Border>
-                <TextBlock Style="{StaticResource Text.Strong}" Text="Noch kein Controller verbunden" Margin="0,14,0,0"
+                <TextBlock Style="{StaticResource Text.Strong}" Text="{ui:T OvEmptyTitle}" Margin="0,14,0,0"
                            HorizontalAlignment="Center" />
                 <TextBlock Style="{StaticResource Text.Wrap}" TextAlignment="Center" MaxWidth="360" Margin="0,6,0,0"
-                           Text="Schließe einen Controller per USB oder Bluetooth an. Er wird automatisch erkannt und sofort übernommen." />
+                           Text="{ui:T OvEmptyText}" />
               </StackPanel>
             </Border>
 
             <TextBlock Style="{StaticResource Text.Caption}" Margin="2,12,0,0" TextWrapping="Wrap"
                        Visibility="{Binding HasPads, Converter={StaticResource BoolToVis}}"
-                       Text="Mit dem Schalter pausierst du einen Controller: Er bleibt verbunden, steuert aber nicht mit." />
+                       Text="{ui:T OvFootnote}" />
             </StackPanel>
           </StackPanel>
 
           <!-- ================================================= Eingabe -->
           <StackPanel x:Name="PageInput" Visibility="Collapsed">
-            <TextBlock Style="{StaticResource Text.PageTitle}" Text="Eingabe" />
+            <TextBlock Style="{StaticResource Text.PageTitle}" Text="{ui:T NavInput}" />
             <TextBlock Style="{StaticResource Text.PageLead}"
-                       Text="Lege fest, wie die Signale aller Controller zu einem zusammengeführt werden." />
+                       Text="{ui:T InLead}" />
 
-            <TextBlock Style="{StaticResource Text.Section}" Text="Zusammenführung" Margin="2,24,0,10" />
+            <TextBlock Style="{StaticResource Text.Section}" Text="{ui:T InMerge}" Margin="2,24,0,10" />
             <Border Style="{StaticResource Card.List}">
               <StackPanel>
-                <ui:SettingRow Title="Analog-Sticks" Description="Wie zwei Sticks kombiniert werden.">
+                <ui:SettingRow Title="{ui:T InSticks}" Description="{ui:T InSticksDesc}">
                   <Border Style="{StaticResource SegmentHost}">
                     <UniformGrid Rows="1">
-                      <RadioButton Style="{StaticResource Segment}" Content="Ganzer Stick" GroupName="stickmode"
+                      <RadioButton Style="{StaticResource Segment}" Content="{ui:T InWholeStick}" GroupName="stickmode"
                                    IsChecked="{Binding StickMode, Converter={StaticResource Equals}, ConverterParameter=PerStick}" />
-                      <RadioButton Style="{StaticResource Segment}" Content="Einzelne Achsen" GroupName="stickmode"
+                      <RadioButton Style="{StaticResource Segment}" Content="{ui:T InPerAxis}" GroupName="stickmode"
                                    IsChecked="{Binding StickMode, Converter={StaticResource Equals}, ConverterParameter=PerAxis}" />
                     </UniformGrid>
                   </Border>
@@ -233,40 +233,47 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                   </Grid.RowDefinitions>
-                  <TextBlock x:Name="ModeStickName" Style="{StaticResource Text}" FontSize="12.5" Text="Ganzer Stick" Margin="0,0,16,6" />
+                  <TextBlock x:Name="ModeStickName" Style="{StaticResource Text}" FontSize="12.5" Text="{ui:T InWholeStick}" Margin="0,0,16,6" />
                   <TextBlock x:Name="ModeStickText" Grid.Column="1" Style="{StaticResource Text.Wrap}" FontSize="12.5" Margin="0,0,0,6"
-                             Text="Der stärkere Stick lenkt allein. Ideal, wenn zwei Personen gleichzeitig steuern." />
-                  <TextBlock x:Name="ModeAxisName" Grid.Row="1" Style="{StaticResource Text}" FontSize="12.5" Text="Einzelne Achsen" Margin="0,0,16,0" />
+                             Text="{ui:T InWholeStickText}" />
+                  <TextBlock x:Name="ModeAxisName" Grid.Row="1" Style="{StaticResource Text}" FontSize="12.5" Text="{ui:T InPerAxis}" Margin="0,0,16,0" />
                   <TextBlock x:Name="ModeAxisText" Grid.Row="1" Grid.Column="1" Style="{StaticResource Text.Wrap}" FontSize="12.5"
-                             Text="Jede Richtung wird für sich verglichen. Eingaben können sich überlagern, etwa zu einer Schräge." />
+                             Text="{ui:T InPerAxisText}" />
                 </Grid>
                 <Border Style="{StaticResource Divider}" />
                 <StackPanel Margin="20,14,20,14">
-                  <TextBlock Style="{StaticResource Text.Strong}" FontWeight="Medium" Text="Tasten, Trigger und Steuerkreuz" Margin="0,0,0,8" />
-                  <ItemsControl Focusable="False">
-                    <ItemsControl.ItemTemplate>
-                      <DataTemplate>
-                        <Grid Margin="0,2">
-                          <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                          </Grid.ColumnDefinitions>
-                          <Ellipse Style="{StaticResource Bullet}" />
-                          <TextBlock Grid.Column="1" Style="{StaticResource Text.Wrap}" FontSize="12.5" Text="{Binding}" />
-                        </Grid>
-                      </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                    <ItemsControl.Items>
-                      <x:Static Member="ui:SettingsTexts.RuleButtons" />
-                      <x:Static Member="ui:SettingsTexts.RuleTriggers" />
-                      <x:Static Member="ui:SettingsTexts.RuleDpad" />
-                    </ItemsControl.Items>
-                  </ItemsControl>
+                  <TextBlock Style="{StaticResource Text.Strong}" FontWeight="Medium" Text="{ui:T InOtherInputs}" Margin="0,0,0,8" />
+                  <StackPanel>
+                    <Grid Margin="0,2">
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                      </Grid.ColumnDefinitions>
+                      <Ellipse Style="{StaticResource Bullet}" />
+                      <TextBlock Grid.Column="1" Style="{StaticResource Text.Wrap}" FontSize="12.5" Text="{ui:T RuleButtons}" />
+                    </Grid>
+                    <Grid Margin="0,2">
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                      </Grid.ColumnDefinitions>
+                      <Ellipse Style="{StaticResource Bullet}" />
+                      <TextBlock Grid.Column="1" Style="{StaticResource Text.Wrap}" FontSize="12.5" Text="{ui:T RuleTriggers}" />
+                    </Grid>
+                    <Grid Margin="0,2">
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                      </Grid.ColumnDefinitions>
+                      <Ellipse Style="{StaticResource Bullet}" />
+                      <TextBlock Grid.Column="1" Style="{StaticResource Text.Wrap}" FontSize="12.5" Text="{ui:T RuleDpad}" />
+                    </Grid>
+                  </StackPanel>
                 </StackPanel>
               </StackPanel>
             </Border>
 
-            <TextBlock Style="{StaticResource Text.Section}" Text="Totzone – ab wann eine Eingabe zählt" />
+            <TextBlock Style="{StaticResource Text.Section}" Text="{ui:T InDeadzone}" />
             <Border Style="{StaticResource Card.List}">
               <StackPanel>
                 <Grid Margin="20,16,20,14">
@@ -279,15 +286,15 @@
                     <ColumnDefinition Width="Auto" />
                   </Grid.ColumnDefinitions>
                   <StackPanel>
-                    <TextBlock Style="{StaticResource Text.Strong}" FontWeight="Medium" Text="Analog-Sticks" />
+                    <TextBlock Style="{StaticResource Text.Strong}" FontWeight="Medium" Text="{ui:T InSticks}" />
                     <TextBlock Style="{StaticResource Text.Wrap}" Margin="0,3,0,0"
-                               Text="Ignoriert kleine Ausschläge, etwa wenn ein Stick von selbst leicht driftet." />
+                               Text="{ui:T InStickDzDesc}" />
                   </StackPanel>
                   <TextBlock Grid.Column="1" Style="{StaticResource Text.Strong}" VerticalAlignment="Top" Margin="16,0,0,0">
                     <Run Text="{Binding StickDeadzone, Mode=OneWay}" /><Run Text=" %" />
                   </TextBlock>
                   <Slider Grid.Row="1" Grid.ColumnSpan="2" Margin="0,12,0,0" Minimum="0" Maximum="30"
-                          Value="{Binding StickDeadzone}" AutomationProperties.Name="Totzone der Analog-Sticks" />
+                          Value="{Binding StickDeadzone}" AutomationProperties.Name="{ui:T InStickDzName}" />
                 </Grid>
                 <Border Style="{StaticResource Divider}" />
                 <Grid Margin="20,16,20,14">
@@ -300,42 +307,41 @@
                     <ColumnDefinition Width="Auto" />
                   </Grid.ColumnDefinitions>
                   <StackPanel>
-                    <TextBlock Style="{StaticResource Text.Strong}" FontWeight="Medium" Text="Trigger" />
+                    <TextBlock Style="{StaticResource Text.Strong}" FontWeight="Medium" Text="{ui:T InTriggers}" />
                     <TextBlock Style="{StaticResource Text.Wrap}" Margin="0,3,0,0"
-                               Text="Leichtes Antippen unterhalb dieser Schwelle zählt nicht." />
+                               Text="{ui:T InTriggerDzDesc}" />
                   </StackPanel>
                   <TextBlock Grid.Column="1" Style="{StaticResource Text.Strong}" VerticalAlignment="Top" Margin="16,0,0,0">
                     <Run Text="{Binding TriggerDeadzone, Mode=OneWay}" /><Run Text=" %" />
                   </TextBlock>
                   <Slider Grid.Row="1" Grid.ColumnSpan="2" Margin="0,12,0,0" Minimum="0" Maximum="30"
-                          Value="{Binding TriggerDeadzone}" AutomationProperties.Name="Totzone der Trigger" />
+                          Value="{Binding TriggerDeadzone}" AutomationProperties.Name="{ui:T InTriggerDzName}" />
                 </Grid>
               </StackPanel>
             </Border>
 
-            <TextBlock Style="{StaticResource Text.Section}" Text="Achsen umkehren" />
+            <TextBlock Style="{StaticResource Text.Section}" Text="{ui:T InInvert}" />
             <Border Style="{StaticResource Card.List}">
               <StackPanel>
-                <ui:SettingRow Title="Linker Stick" Description="Bewegungsrichtung spiegeln.">
+                <ui:SettingRow Title="{ui:T InLeftStick}" Description="{ui:T InLeftStickDesc}">
                   <StackPanel Orientation="Horizontal">
-                    <CheckBox Style="{StaticResource Toggle}" Content="Horizontal" IsChecked="{Binding InvertLeftX}" />
-                    <CheckBox Style="{StaticResource Toggle}" Content="Vertikal" IsChecked="{Binding InvertLeftY}" Margin="24,0,0,0" />
+                    <CheckBox Style="{StaticResource Toggle}" Content="{ui:T InHorizontal}" IsChecked="{Binding InvertLeftX}" />
+                    <CheckBox Style="{StaticResource Toggle}" Content="{ui:T InVertical}" IsChecked="{Binding InvertLeftY}" Margin="24,0,0,0" />
                   </StackPanel>
                 </ui:SettingRow>
                 <Border Style="{StaticResource Divider}" />
-                <ui:SettingRow Title="Rechter Stick" Description="Etwa für invertierte Kamerasteuerung.">
+                <ui:SettingRow Title="{ui:T InRightStick}" Description="{ui:T InRightStickDesc}">
                   <StackPanel Orientation="Horizontal">
-                    <CheckBox Style="{StaticResource Toggle}" Content="Horizontal" IsChecked="{Binding InvertRightX}" />
-                    <CheckBox Style="{StaticResource Toggle}" Content="Vertikal" IsChecked="{Binding InvertRightY}" Margin="24,0,0,0" />
+                    <CheckBox Style="{StaticResource Toggle}" Content="{ui:T InHorizontal}" IsChecked="{Binding InvertRightX}" />
+                    <CheckBox Style="{StaticResource Toggle}" Content="{ui:T InVertical}" IsChecked="{Binding InvertRightY}" Margin="24,0,0,0" />
                   </StackPanel>
                 </ui:SettingRow>
               </StackPanel>
             </Border>
 
-            <TextBlock Style="{StaticResource Text.Section}" Text="Reaktionszeit" />
+            <TextBlock Style="{StaticResource Text.Section}" Text="{ui:T InResponse}" />
             <Border Style="{StaticResource Card.List}">
-              <ui:SettingRow Title="Abfrageintervall">
-                <ui:SettingRow.Description>Kürzer heißt schnellere Reaktion bei minimal mehr Rechenlast. Empfohlen: 4 ms.</ui:SettingRow.Description>
+              <ui:SettingRow Title="{ui:T InInterval}" Description="{ui:T InIntervalDesc}">
                 <Border Style="{StaticResource SegmentHost}">
                   <UniformGrid Rows="1">
                     <RadioButton Style="{StaticResource Segment}" MinWidth="58" Content="1 ms" GroupName="poll"
@@ -354,44 +360,58 @@
 
           <!-- ================================================= Allgemein -->
           <StackPanel x:Name="PageGeneral" Visibility="Collapsed">
-            <TextBlock Style="{StaticResource Text.PageTitle}" Text="Allgemein" />
-            <TextBlock Style="{StaticResource Text.PageLead}" Text="Verhalten, Darstellung und technische Details." />
+            <TextBlock Style="{StaticResource Text.PageTitle}" Text="{ui:T NavGeneral}" />
+            <TextBlock Style="{StaticResource Text.PageLead}" Text="{ui:T GenLead}" />
 
-            <TextBlock Style="{StaticResource Text.Section}" Text="Verhalten" Margin="2,24,0,10" />
+            <TextBlock Style="{StaticResource Text.Section}" Text="{ui:T GenBehavior}" Margin="2,24,0,10" />
             <Border Style="{StaticResource Card.List}">
               <StackPanel>
-                <ui:SettingRow Title="Vibration weitergeben"
-                               Description="Vibration aus Spielen geht an alle aktiven Controller, die sie unterstützen.">
-                  <CheckBox Style="{StaticResource Toggle.OnOff}" IsChecked="{Binding RumbleEnabled}" AutomationProperties.Name="Vibration weitergeben" />
+                <ui:SettingRow Title="{ui:T GenRumble}"
+                               Description="{ui:T GenRumbleDesc}">
+                  <CheckBox Style="{StaticResource Toggle.OnOff}" IsChecked="{Binding RumbleEnabled}" AutomationProperties.Name="{ui:T GenRumble}" />
                 </ui:SettingRow>
                 <Border Style="{StaticResource Divider}" />
-                <ui:SettingRow Title="Mit Windows starten"
-                               Description="Startet unauffällig im Infobereich der Taskleiste.">
-                  <CheckBox Style="{StaticResource Toggle.OnOff}" IsChecked="{Binding Autostart}" AutomationProperties.Name="Mit Windows starten" />
+                <ui:SettingRow Title="{ui:T GenAutostart}"
+                               Description="{ui:T GenAutostartDesc}">
+                  <CheckBox Style="{StaticResource Toggle.OnOff}" IsChecked="{Binding Autostart}" AutomationProperties.Name="{ui:T GenAutostart}" />
                 </ui:SettingRow>
               </StackPanel>
             </Border>
 
-            <TextBlock Style="{StaticResource Text.Section}" Text="Darstellung" />
-            <Border Style="{StaticResource Card.List}">
-              <ui:SettingRow Title="Farbschema" Description="Folgt standardmäßig der Windows-Einstellung.">
-                <Border Style="{StaticResource SegmentHost}">
-                  <UniformGrid Rows="1">
-                    <RadioButton Style="{StaticResource Segment}" MinWidth="72" Content="System" GroupName="theme"
-                                 IsChecked="{Binding Theme, Converter={StaticResource Equals}, ConverterParameter=System}" />
-                    <RadioButton Style="{StaticResource Segment}" MinWidth="72" Content="Hell" GroupName="theme"
-                                 IsChecked="{Binding Theme, Converter={StaticResource Equals}, ConverterParameter=Light}" />
-                    <RadioButton Style="{StaticResource Segment}" MinWidth="72" Content="Dunkel" GroupName="theme"
-                                 IsChecked="{Binding Theme, Converter={StaticResource Equals}, ConverterParameter=Dark}" />
-                  </UniformGrid>
-                </Border>
-              </ui:SettingRow>
-            </Border>
-
-            <TextBlock Style="{StaticResource Text.Section}" Text="Technische Details" />
+            <TextBlock Style="{StaticResource Text.Section}" Text="{ui:T GenAppearance}" />
             <Border Style="{StaticResource Card.List}">
               <StackPanel>
-                <ui:SettingRow Title="Controller-Treiber (ViGEmBus)" Description="Stellt den virtuellen Xbox 360 Controller bereit.">
+                <ui:SettingRow Title="{ui:T GenTheme}" Description="{ui:T GenThemeDesc}">
+                  <Border Style="{StaticResource SegmentHost}">
+                    <UniformGrid Rows="1">
+                      <RadioButton Style="{StaticResource Segment}" MinWidth="72" Content="{ui:T ThemeSystem}" GroupName="theme"
+                                   IsChecked="{Binding Theme, Converter={StaticResource Equals}, ConverterParameter=System}" />
+                      <RadioButton Style="{StaticResource Segment}" MinWidth="72" Content="{ui:T ThemeLight}" GroupName="theme"
+                                   IsChecked="{Binding Theme, Converter={StaticResource Equals}, ConverterParameter=Light}" />
+                      <RadioButton Style="{StaticResource Segment}" MinWidth="72" Content="{ui:T ThemeDark}" GroupName="theme"
+                                   IsChecked="{Binding Theme, Converter={StaticResource Equals}, ConverterParameter=Dark}" />
+                    </UniformGrid>
+                  </Border>
+                </ui:SettingRow>
+                <Border Style="{StaticResource Divider}" />
+                <!-- Sprachnamen bewusst nicht übersetzt: jeder findet seine eigene Sprache -->
+                <ui:SettingRow Title="{ui:T GenLanguage}" Description="{ui:T GenLanguageDesc}">
+                  <Border Style="{StaticResource SegmentHost}">
+                    <UniformGrid Rows="1">
+                      <RadioButton Style="{StaticResource Segment}" MinWidth="72" Content="Deutsch" GroupName="language"
+                                   IsChecked="{Binding Language, Converter={StaticResource Equals}, ConverterParameter=German}" />
+                      <RadioButton Style="{StaticResource Segment}" MinWidth="72" Content="English" GroupName="language"
+                                   IsChecked="{Binding Language, Converter={StaticResource Equals}, ConverterParameter=English}" />
+                    </UniformGrid>
+                  </Border>
+                </ui:SettingRow>
+              </StackPanel>
+            </Border>
+
+<TextBlock Style="{StaticResource Text.Section}" Text="{ui:T GenTech}" />
+            <Border Style="{StaticResource Card.List}">
+              <StackPanel>
+                <ui:SettingRow Title="{ui:T GenDriver}" Description="{ui:T GenDriverDesc}">
                   <StackPanel Orientation="Horizontal">
                     <Ellipse Width="7" Height="7" Margin="0,1,8,0" VerticalAlignment="Center">
                       <Ellipse.Style>
@@ -409,21 +429,21 @@
                   </StackPanel>
                 </ui:SettingRow>
                 <Border Style="{StaticResource Divider}" />
-                <ui:SettingRow Title="Anschluss in Windows" Description="Unter dieser Spielernummer sehen Spiele den virtuellen Controller.">
+                <ui:SettingRow Title="{ui:T GenPort}" Description="{ui:T GenPortDesc}">
                   <TextBlock Style="{StaticResource Text}" Text="{Binding PlayerText}" />
                 </ui:SettingRow>
                 <Border Style="{StaticResource Divider}" />
-                <ui:SettingRow Title="Gemessene Abfragerate" Description="Wie oft pro Sekunde alle Controller gelesen werden.">
+                <ui:SettingRow Title="{ui:T GenRate}" Description="{ui:T GenRateDesc}">
                   <TextBlock Style="{StaticResource Text}" Text="{Binding RateText}" />
                 </ui:SettingRow>
                 <Border Style="{StaticResource Divider}" />
-                <ui:SettingRow Title="Eingabebibliothek (SDL)" Description="Erkennt Xbox-, PlayStation-, Switch- und HID-Controller.">
+                <ui:SettingRow Title="{ui:T GenSdl}" Description="{ui:T GenSdlDesc}">
                   <TextBlock Style="{StaticResource Text}" Text="{Binding SdlVersionText}" />
                 </ui:SettingRow>
               </StackPanel>
             </Border>
 
-            <TextBlock Style="{StaticResource Text.Section}" Text="Hilfe" />
+            <TextBlock Style="{StaticResource Text.Section}" Text="{ui:T GenHelp}" />
             <Border Style="{StaticResource Card}" Padding="20,16">
               <Grid>
                 <Grid.ColumnDefinitions>
@@ -434,15 +454,15 @@
                   <TextBlock Style="{StaticResource Icon}" Text="&#xE946;" Foreground="{DynamicResource Brush.TextSecondary}" />
                 </Border>
                 <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
-                  <TextBlock Style="{StaticResource Text.Strong}" Text="Ein Spiel reagiert doppelt?" />
+                  <TextBlock Style="{StaticResource Text.Strong}" Text="{ui:T GenHelpTitle}" />
                   <TextBlock Style="{StaticResource Text.Wrap}" Margin="0,4,0,0"
-                             Text="Wähle im Spiel den virtuellen Xbox 360 Controller. Hilft das nicht, verbirg die echten Controller mit dem kostenlosen Tool HidHide." />
+                             Text="{ui:T GenHelpText}" />
                 </StackPanel>
               </Grid>
             </Border>
 
             <Button Style="{StaticResource Button.Link}" HorizontalAlignment="Left" Margin="-8,14,0,0" ui:Ui.Icon="&#xE8A7;"
-                    Content="Logdatei öffnen" Command="{Binding OpenLogCommand}" />
+                    Content="{ui:T GenOpenLog}" Command="{Binding OpenLogCommand}" />
           </StackPanel>
         </Grid>
       </ScrollViewer>

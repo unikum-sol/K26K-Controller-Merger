@@ -26,6 +26,7 @@ internal sealed class TrayController : IDisposable
         _icon.TrayRightMouseUp += (_, _) => ShowPopup();
         _icon.TrayMouseDoubleClick += (_, _) => { ClosePopup(); _openSettings(); };
         ThemeManager.Changed += () => Update(_lastSnapshot, force: true);
+        Loc.Changed += () => Update(_lastSnapshot);
     }
 
     private EngineSnapshot _lastSnapshot = EngineSnapshot.Initial;
@@ -54,13 +55,13 @@ internal sealed class TrayController : IDisposable
         {
             EngineState.Running => snap.Pads.Count switch
             {
-                0 => "K26K Controller Merger – kein Controller verbunden",
-                1 => "K26K Controller Merger – 1 Controller aktiv",
-                var n => $"K26K Controller Merger – {snap.ActivePadCount} von {n} Controllern aktiv",
+                0 => Loc.T("TrayNone"),
+                1 => Loc.T("TrayOne"),
+                var n => Loc.F("TraySome", snap.ActivePadCount, n),
             },
-            EngineState.DriverMissing => "K26K Controller Merger – ViGEmBus nicht verfügbar",
-            EngineState.Error => "K26K Controller Merger – Fehler",
-            _ => "K26K Controller Merger – startet …",
+            EngineState.DriverMissing => Loc.T("TrayDriver"),
+            EngineState.Error => Loc.T("TrayError"),
+            _ => Loc.T("TrayStarting"),
         };
     }
 

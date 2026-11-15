@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:ControllerMerger.UI"
         xmlns:vm="clr-namespace:ControllerMerger.UI.ViewModels"
-        Title="K26K Controller Merger – Einrichtung"
+        Title="{ui:T SetupTitle}"
         Width="540" Height="600" ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource Brush.Window}"
@@ -80,10 +80,10 @@
 
       <StackPanel Orientation="Horizontal" Margin="20,0,0,0" VerticalAlignment="Center">
         <Image x:Name="AppMark" Width="16" Height="16" />
-        <TextBlock Style="{StaticResource Text.Secondary}" Text="K26K Controller Merger · Einrichtung" Margin="10,0,0,0" VerticalAlignment="Center" />
+        <TextBlock Style="{StaticResource Text.Secondary}" Text="{ui:T SetupCaption}" Margin="10,0,0,0" VerticalAlignment="Center" />
       </StackPanel>
       <Button Style="{StaticResource Button.CaptionClose}" Content="&#xE8BB;" HorizontalAlignment="Right" VerticalAlignment="Top"
-              Click="OnClose" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="Schließen" />
+              Click="OnClose" WindowChrome.IsHitTestVisibleInChrome="True" ToolTip="{ui:T Close}" />
 
       <!-- Inhalt -->
       <StackPanel Grid.Row="1" Margin="36,12,36,0">
@@ -105,7 +105,7 @@
         <Border Style="{StaticResource Card.List}" Margin="0,24,0,0"
                 Visibility="{Binding ShowHints, Converter={StaticResource BoolToVis}}">
           <StackPanel>
-            <TextBlock Style="{StaticResource Text.Strong}" Text="Das hilft meistens" Margin="20,16,20,4" />
+            <TextBlock Style="{StaticResource Text.Strong}" Text="{ui:T SetupHelpsMost}" Margin="20,16,20,4" />
             <ItemsControl ItemsSource="{Binding RepairSteps}" Focusable="False" Margin="0,0,0,10">
               <ItemsControl.ItemTemplate>
                 <DataTemplate>
@@ -139,8 +139,8 @@
                 <Image x:Name="TrayPreview" Width="20" Height="20" />
               </Border>
               <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
-                <TextBlock Style="{StaticResource Text.Strong}" Text="Das Symbol im Infobereich" />
-                <TextBlock Style="{StaticResource Text.Secondary}" Text="Ein grüner Punkt bedeutet: Controller steuern mit." Margin="0,2,0,0" />
+                <TextBlock Style="{StaticResource Text.Strong}" Text="{ui:T SetupTrayTitle}" />
+                <TextBlock Style="{StaticResource Text.Secondary}" Text="{ui:T SetupTrayText}" Margin="0,2,0,0" />
               </StackPanel>
             </Grid>
             <Border Style="{StaticResource Divider}" />
@@ -155,14 +155,14 @@
               </Grid.RowDefinitions>
               <Border CornerRadius="6" Padding="10,3" Background="{DynamicResource Brush.SurfaceSubtle}" BorderBrush="{DynamicResource Brush.Stroke}"
                       BorderThickness="1" HorizontalAlignment="Left" Margin="0,0,16,10">
-                <TextBlock Style="{StaticResource Text}" FontSize="12" FontWeight="SemiBold" Text="Rechtsklick" />
+                <TextBlock Style="{StaticResource Text}" FontSize="12" FontWeight="SemiBold" Text="{ui:T SetupRightClick}" />
               </Border>
-              <TextBlock Grid.Column="1" Style="{StaticResource Text}" Text="Status ansehen und beenden" VerticalAlignment="Center" Margin="0,0,0,10" />
+              <TextBlock Grid.Column="1" Style="{StaticResource Text}" Text="{ui:T SetupRightClickText}" VerticalAlignment="Center" Margin="0,0,0,10" />
               <Border Grid.Row="1" CornerRadius="6" Padding="10,3" Background="{DynamicResource Brush.SurfaceSubtle}" BorderBrush="{DynamicResource Brush.Stroke}"
                       BorderThickness="1" HorizontalAlignment="Left" Margin="0,0,16,0">
-                <TextBlock Style="{StaticResource Text}" FontSize="12" FontWeight="SemiBold" Text="Doppelklick" />
+                <TextBlock Style="{StaticResource Text}" FontSize="12" FontWeight="SemiBold" Text="{ui:T SetupDoubleClick}" />
               </Border>
-              <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource Text}" Text="Einstellungen öffnen" VerticalAlignment="Center" />
+              <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource Text}" Text="{ui:T SetupDoubleClickText}" VerticalAlignment="Center" />
             </Grid>
           </StackPanel>
         </Border>

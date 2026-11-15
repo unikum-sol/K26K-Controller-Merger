@@ -1,50 +1,57 @@
-# Design-Council – Prozess & Ergebnis
+# Design council – process & result
 
-## Auftrag
-Die Oberfläche (Tray-Popup, Einstellungsfenster, Einrichtungsassistent, Tray-Symbol) iterativ verbessern, bis **jedes** Council-Mitglied mindestens **9/10** für die Designqualität vergibt. Ziel war ein modernes, ruhiges, augenschonendes UI mit gleichwertigem Hell- und Dunkelmodus, das kein generischer Windows-Standard-Look ist.
+## Mandate
+Iteratively improve the interface (tray popup, settings window, setup wizard, tray icon) until **every** council member rates the design quality at least **9/10**. The goal was a modern, calm, eye-friendly UI with equally good light and dark modes, not a generic Windows default look.
 
-## Zusammensetzung
-Vier Claude-Modelle mit festen, sich ergänzenden Rollen. Jedes Mitglied bewertete unabhängig und wurde in den Folgerunden mit seinem eigenen Verlauf fortgesetzt, damit es gezielt prüfen konnte, ob *seine* Kritik gelöst ist.
+## Members
+Four Claude models with fixed, complementary roles. Each member rated independently and was resumed with its own history in later rounds, so it could check specifically whether *its* criticism had been addressed.
 
-| Mitglied | Rolle | Schwerpunkt |
+| Member | Role | Focus |
 |---|---|---|
-| Claude Opus | Senior Visual Designer | Ästhetik, Typografie, Raster, Hierarchie, Konsistenz |
-| Claude Sonnet | UX & Informationsarchitektur | Verständlichkeit, Microcopy, Zustände, Bedienlogik |
-| Claude Haiku | Accessibility & Augenkomfort | WCAG-Kontrast, Farbunabhängigkeit, Klickziele, Blendung |
-| Claude Fable | Kritischer Product-Design-Lead | Vergleich mit Top-Utilities, Charakter, Redundanz |
+| Claude Opus | Senior visual designer | Aesthetics, typography, grid, hierarchy, consistency |
+| Claude Sonnet | UX & information architecture | Clarity, microcopy, states, interaction logic |
+| Claude Haiku | Accessibility & eye comfort | WCAG contrast, color independence, click targets, glare |
+| Claude Fable | Critical product design lead | Comparison with top utilities, character, redundancy |
 
-## Methode
-1. **Reproduzierbare Renderings:** `K26KControllerMerger.exe --snapshot <ordner>` rendert alle Oberflächen mit Beispieldaten in Hell und Dunkel (1,5-fach) als PNG, darunter Normal-, Leer-, Fehler-, Setup- und Tray-Zustände. Dafür braucht es weder Treiber noch Controller.
-2. **Unabhängige Bewertung:** festes Antwortformat (Score, Stärken, Probleme mit konkretem Fix, „für 9/10 nötig“).
-3. **Konsolidierung:** Überschneidende Kritik wurde zu Maßnahmen zusammengeführt. Bei Zielkonflikten (z. B. „Beenden“ rot vs. neutral) wurde ein Kompromiss gewählt und dokumentiert.
-4. **Umsetzung → neue Renderings → nächste Runde.**
+## Method
+1. **Reproducible renderings:** `K26KControllerMerger.exe --snapshot <folder>` renders every screen with sample data in light and dark mode (1.5×) as PNG, including normal, empty, error, setup and tray states. No driver or controller is needed.
+2. **Independent rating:** fixed answer format (score, strengths, problems with a concrete fix, "needed for 9/10").
+3. **Consolidation:** overlapping criticism was merged into actions. On conflicting goals (e.g. "Quit" red vs. neutral), a compromise was chosen and documented.
+4. **Implementation → new renderings → next round.**
 
-## Verlauf
+## History
 
-| Runde | Opus | Sonnet | Haiku | Fable | Kernthemen |
+| Round | Opus | Sonnet | Haiku | Fable | Key topics |
 |---|---|---|---|---|---|
-| [1](design/round-1.md) | 7 | 7 | 6 | 6 | widersprüchliche Zustände, Dopplungen, Jargon, Breiten, Kontrast, kein Charakter |
-| [2](design/round-2.md) | 8 | 8,5 | 8 | 8 | Button-Hierarchie, leerer Erfolgsdialog, Symbolik App vs. virtueller Controller, Tray bei 16 px |
-| [3](design/round-3.md) | **9** | **9** | **9** | **9** | ✅ Abbruchkriterium erreicht |
+| [1](design/round-1.md) | 7 | 7 | 6 | 6 | contradictory states, duplication, jargon, widths, contrast, no character |
+| [2](design/round-2.md) | 8 | 8.5 | 8 | 8 | button hierarchy, empty success dialog, app vs. virtual-controller symbols, tray at 16 px |
+| [3](design/round-3.md) | **9** | **9** | **9** | **9** | ✅ exit criterion reached |
 
-## Wichtigste Designentscheidungen (Ergebnis)
+The council reviewed the German UI. The English translation added later uses the same layout and was checked via `--snapshot` (files prefixed `en-`).
 
-- **Design-Tokens statt Einzelfarben:** `Themes/Dark.xaml` und `Themes/Light.xaml` mit identischen Schlüsseln. Alle Controls nutzen ausschließlich `DynamicResource`, der Wechsel zwischen Hell und Dunkel erfolgt live und folgt auf Wunsch Windows.
-- **Augenschonendes Dunkel:** kühles Neutralgrau (#141619 / #1C1F23) statt Reinschwarz, eine einzige Akzentfarbe, semantische Farben nur für Zustände.
-- **Kontrast nach WCAG:** Tertiärtext ≥ 5,3:1, Nicht-Text-Elemente (Schalter-Aus, Slider-Track, Segment- und Navigationsauswahl) ≥ 3:1.
-- **Zustand nie nur über Farbe:** Schalterposition + „Ein/Aus“, Badges mit Punkt + Text; das Tray-Symbol kodiert über die Form (Punkt / Ring / Ausrufezeichen).
-- **Jede Information genau einmal:** keine Kennzahl-Kacheln, kein doppeltes „Aktiv“, Technik gesammelt in „Technische Details“.
-- **Ehrliche Zustände:** Aktiv / Bereit / Pausiert / Fehler. Ein Fehler hat genau eine Meldung und eine Handlung („Treiber einrichten“).
-- **Eigene Zeichensprache:** Monogramm-Kacheln (PS, XB, NS, NS2, GC), der virtuelle Controller als „360“, Hero „Gesteuert von …“ (N → 1).
-- **Laiensprache:** „Für Spiele sichtbar als Spieler 2“ statt „XInput-Slot 1“, Totzone, Vibration, Tasten, „Ganzer Stick / Einzelne Achsen“.
-- **Raster:** 4-px-Basis, 40-DIP-Kacheln mit 16 DIP Abstand, eine Fluchtlinie für Text, eine Inhaltsbreite (600 DIP) für alle Seiten, Radius 6 / 10 / 12.
-- **Setup wie ein Produkt:** feste Höhe, Fußleiste, Stepper mit Linien, Wartezustand mit Spinner und „Schritt 2 von 3“, Erfolgskarte mit den zwei Tray-Gesten, Reparatur als „Das hilft meistens“.
+## Key design decisions (result)
 
-## Vorher / Nachher
+- **Design tokens instead of individual colors:** `Themes/Dark.xaml` and `Themes/Light.xaml` with identical keys. All controls use `DynamicResource` only, and switching between light and dark happens live, optionally following Windows.
+- **Eye-friendly dark:** cool neutral gray (#141619 / #1C1F23) instead of pure black, a single accent color, semantic colors only for states.
+- **WCAG contrast:** tertiary text ≥ 5.3:1, non-text elements (switch off-state, slider track, segment and navigation selection) ≥ 3:1.
+- **State never by color alone:** switch position + "On/Off", badges with dot + text; the tray icon also encodes state by shape (dot / ring / exclamation mark).
+- **Every piece of information exactly once:** no metric tiles, no duplicate "Active", technical information collected under "Technical details".
+- **Honest states:** Active / Ready / Paused / Error. An error shows exactly one message and one action ("Set up driver").
+- **Own visual language:** monogram tiles (PS, XB, NS, NS2, GC), the virtual controller as "360", and a hero showing "Controlled by …" (N → 1).
+- **Plain language:** "Visible to games as player 2" instead of "XInput slot 1", dead zone, rumble, buttons, "whole stick / individual axes".
+- **Grid:** 4 px base, 40 DIP tiles with 16 DIP spacing, one alignment line for text, one content width (600 DIP) for all pages, radii 6 / 10 / 12.
+- **Setup like a product:**
+  - fixed height and a footer
+  - stepper with connecting lines
+  - waiting state with spinner and "Step 2 of 3"
+  - success card showing the two tray gestures
+  - repair view as "What usually helps"
 
-| Runde 1 | Runde 3 |
+## Before / after
+
+| Round 1 | Round 3 |
 |---|---|
-| ![vorher](../design/screenshots/before-r1-settings-overview-dark.png) | ![nachher](../design/screenshots/settings-overview-dark.png) |
-| ![vorher](../design/screenshots/before-r1-popup-dark.png) | ![nachher](../design/screenshots/popup-dark.png) |
+| ![before](../design/screenshots/before-r1-settings-overview-dark.png) | ![after](../design/screenshots/settings-overview-dark.png) |
+| ![before](../design/screenshots/before-r1-popup-dark.png) | ![after](../design/screenshots/popup-dark.png) |
 
-Alle finalen Renderings liegen unter [`docs/design/screenshots`](../design/screenshots).
+All final renderings are in [`docs/design/screenshots`](../design/screenshots).

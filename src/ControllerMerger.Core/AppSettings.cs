@@ -5,6 +5,9 @@ namespace ControllerMerger.Core;
 
 public enum ThemePreference { System = 0, Light = 1, Dark = 2 }
 
+/// <summary>UI language. Not set (null) = follow the Windows display language.</summary>
+public enum UiLanguage { German = 0, English = 1 }
+
 /// <summary>
 /// Persistente Benutzereinstellungen (JSON unter %APPDATA%\K26KControllerMerger\settings.json).
 /// Fehlende Felder fallen auf Standardwerte zurück, ungültige Werte werden in
@@ -27,6 +30,9 @@ public sealed class AppSettings
     public bool Autostart { get; set; }
     public ThemePreference Theme { get; set; } = ThemePreference.System;
 
+    /// <summary>Explicitly chosen UI language; null = Windows display language.</summary>
+    public UiLanguage? Language { get; set; }
+
     /// <summary>Wurde die Ersteinrichtung (ViGEmBus) einmal erfolgreich abgeschlossen?</summary>
     public bool SetupCompleted { get; set; }
 
@@ -39,6 +45,7 @@ public sealed class AppSettings
         TriggerDeadzonePercent = Math.Clamp(TriggerDeadzonePercent, 0, 40);
         if (!Enum.IsDefined(StickMode)) StickMode = StickMergeMode.PerStick;
         if (!Enum.IsDefined(Theme)) Theme = ThemePreference.System;
+        if (Language is { } lang && !Enum.IsDefined(lang)) Language = null;
         if (!PollingIntervals.Contains(PollingIntervalMs)) PollingIntervalMs = 4;
         DisabledDevices = (DisabledDevices ?? []).Where(k => !string.IsNullOrWhiteSpace(k)).Distinct().ToList();
         return this;

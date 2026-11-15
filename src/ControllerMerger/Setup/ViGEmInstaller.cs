@@ -10,6 +10,9 @@ namespace ControllerMerger.Setup;
 
 public sealed class InstallerVerificationException(string message) : Exception(message);
 
+/// <summary>Bewusster Abbruch mit nutzerfreundlicher Meldung (UAC abgelehnt, Installer abgebrochen).</summary>
+public sealed class SetupCancelledException(string message) : OperationCanceledException(message);
+
 /// <summary>
 /// Lädt den ViGEmBus-Installer, verifiziert ihn und startet ihn mit Administratorrechten.
 /// Sicherheitskonzept (Architektur-Council, einstimmig):
@@ -69,16 +72,16 @@ internal static class ViGEmInstaller
         using (var stream = File.OpenRead(path))
             actual = Convert.ToHexStringLower(SHA256.HashData(stream));
         if (!string.Equals(actual, Sha256, StringComparison.OrdinalIgnoreCase))
-            throw new InstallerVerificationException("Die Prüfsumme der heruntergeladenen Datei stimmt nicht. Die Datei wurde nicht ausgeführt.");
+            throw new InstallerVerificationException(UI.Loc.T("ErrHash"));
 
         if (!Native.HasValidAuthenticodeSignature(path))
-            throw new InstallerVerificationException("Die digitale Signatur des Installers ist ungültig. Die Datei wurde nicht ausgeführt.");
+            throw new InstallerVerificationException(UI.Loc.T("ErrSignature"));
 
 #pragma warning disable SYSLIB0057 // nur Lesen des Signaturzertifikats einer bereits geprüften Datei
         using var cert = new X509Certificate2(X509Certificate.CreateFromSignedFile(path));
 #pragma warning restore SYSLIB0057
         if (!cert.Subject.StartsWith(ExpectedSigner, StringComparison.OrdinalIgnoreCase))
-            throw new InstallerVerificationException($"Unerwarteter Herausgeber: {cert.Subject}");
+            throw new InstallerVerificationException(UI.Loc.F("ErrPublisher", cert.Subject));
 
         Log.Info("ViGEmBus-Installer verifiziert (SHA-256 + Authenticode).");
     }
@@ -102,7 +105,7 @@ internal static class ViGEmInstaller
         }
         catch (Win32Exception ex) when (ex.NativeErrorCode == 1223) // ERROR_CANCELLED
         {
-            throw new OperationCanceledException("Die Administrator-Abfrage wurde abgelehnt.");
+            throw new SetupCancelledException(UI.Loc.T("ErrUacDenied"));
         }
 
         if (process is null) throw new InvalidOperationException("Installer konnte nicht gestartet werden.");

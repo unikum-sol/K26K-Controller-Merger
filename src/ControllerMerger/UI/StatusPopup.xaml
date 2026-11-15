@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:ControllerMerger.UI"
-        Title="K26K Controller Merger – Status"
+        Title="{ui:T PopupTitle}"
         Width="384" SizeToContent="Height"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         ResizeMode="NoResize" ShowInTaskbar="False" Topmost="True" ShowActivated="True"
@@ -21,7 +21,7 @@
           <TextBlock x:Name="name" Style="{StaticResource Text.Strong}" Text="{Binding Name}" />
           <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding Detail}" Margin="0,2,0,0" />
         </StackPanel>
-        <TextBlock x:Name="paused" Grid.Column="2" Style="{StaticResource Text.Secondary}" Text="Pausiert"
+        <TextBlock x:Name="paused" Grid.Column="2" Style="{StaticResource Text.Secondary}" Text="{ui:T Paused}"
                    VerticalAlignment="Center" Visibility="Collapsed" />
       </Grid>
       <DataTemplate.Triggers>
@@ -64,7 +64,7 @@
 
         <!-- Normalbetrieb -->
         <StackPanel Visibility="{Binding ShowContent, Converter={StaticResource BoolToVis}}">
-          <TextBlock Style="{StaticResource Text.Caption}" Text="Für Spiele sichtbar" Margin="18,12,18,6" />
+          <TextBlock Style="{StaticResource Text.Caption}" Text="{ui:T PopVisibleToGames}" Margin="18,12,18,6" />
           <Grid Margin="18,0,18,12">
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="32" />
@@ -75,7 +75,7 @@
                          Foreground="{DynamicResource Brush.OnAccent}" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Border>
             <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
-              <TextBlock Style="{StaticResource Text.Strong}" Text="Virtueller Xbox 360 Controller" />
+              <TextBlock Style="{StaticResource Text.Strong}" Text="{ui:T VirtualController}" />
               <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding PlayerText}" Margin="0,2,0,0" />
             </StackPanel>
           </Grid>
@@ -83,13 +83,13 @@
           <Border Style="{StaticResource Divider}" />
 
           <Grid Margin="18,12,18,4">
-            <TextBlock Style="{StaticResource Text.Caption}" Text="Deine Controller" />
+            <TextBlock Style="{StaticResource Text.Caption}" Text="{ui:T YourControllers}" />
             <TextBlock Style="{StaticResource Text.Caption}" Text="{Binding PadsSummary}" HorizontalAlignment="Right" />
           </Grid>
           <ItemsControl ItemsSource="{Binding Pads}" ItemTemplate="{StaticResource PopupPadRow}" Focusable="False" Margin="0,0,0,8"
                         Visibility="{Binding HasPads, Converter={StaticResource BoolToVis}}" />
           <TextBlock Style="{StaticResource Text.Wrap}" Margin="18,4,18,14"
-                     Text="Noch keiner verbunden. Schließe einen Controller per USB oder Bluetooth an."
+                     Text="{ui:T PopEmpty}"
                      Visibility="{Binding HasPads, Converter={StaticResource BoolToVis}, ConverterParameter=invert}" />
         </StackPanel>
 
@@ -100,7 +100,7 @@
             <TextBlock Style="{StaticResource Text.Strong}" Text="{Binding ProblemTitle}" VerticalAlignment="Center" />
           </StackPanel>
           <TextBlock Style="{StaticResource Text.Wrap}" Text="{Binding ProblemText}" Margin="25,4,0,0" />
-          <Button Style="{StaticResource Button.Primary}" Content="Treiber einrichten" HorizontalAlignment="Left" Margin="25,12,0,0"
+          <Button Style="{StaticResource Button.Primary}" Content="{ui:T SetupDriver}" HorizontalAlignment="Left" Margin="25,12,0,0"
                   Command="{Binding RepairDriverCommand}" Click="OnActionClick"
                   Visibility="{Binding CanRepair, Converter={StaticResource BoolToVis}}" />
         </StackPanel>
@@ -110,13 +110,13 @@
         <!-- Aktionen -->
         <Grid Margin="8">
           <Button Style="{StaticResource Button.Ghost}" HorizontalAlignment="Left" ui:Ui.Icon="&#xE713;"
-                  Content="Einstellungen öffnen" Command="{Binding OpenSettingsCommand}" Click="OnActionClick" />
+                  Content="{ui:T OpenSettings}" Command="{Binding OpenSettingsCommand}" Click="OnActionClick" />
           <!-- Destruktive Aktion: Symbol in Rot als Hinweis, Text ruhig; volle Rot-Fläche erst beim Überfahren -->
           <Button Style="{StaticResource Button.Danger}" HorizontalAlignment="Right" Command="{Binding ExitCommand}"
-                  Click="OnActionClick" ToolTip="Beendet K26K Controller Merger. Der virtuelle Controller wird entfernt.">
+                  Click="OnActionClick" ToolTip="{ui:T QuitTip}">
             <StackPanel Orientation="Horizontal">
               <TextBlock Style="{StaticResource Icon}" Text="&#xE7E8;" FontSize="14" Foreground="{DynamicResource Brush.Danger}" Margin="0,0,8,0" />
-              <TextBlock Text="Beenden" VerticalAlignment="Center" />
+              <TextBlock Text="{ui:T Quit}" VerticalAlignment="Center" />
             </StackPanel>
           </Button>
         </Grid>

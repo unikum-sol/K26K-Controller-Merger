@@ -84,7 +84,7 @@ internal static class PadNames
         PadKind.Xbox360 or PadKind.XboxOne => "Xbox",
         PadKind.DualShock3 or PadKind.DualShock4 or PadKind.DualSense => "PlayStation",
         PadKind.SwitchPro or PadKind.JoyCon => "Nintendo Switch",
-        PadKind.Switch2 => "Nintendo Switch 2 (experimentell)",
+        PadKind.Switch2 => UI.Loc.T("FamSwitch2"),
         PadKind.GameCube => "Nintendo",
         _ => "Gamepad",
     };

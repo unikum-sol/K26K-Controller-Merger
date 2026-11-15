@@ -79,6 +79,7 @@ public partial class App : Application
         _store = new SettingsStore();
         _appliedTheme = _store.Current.Theme;
         ThemeManager.Apply(_appliedTheme);
+        Loc.SetLanguage(_store.Current.Language ?? Loc.SystemDefault);
 
         // ---------------------------------------------------------- Treiber / Ersteinrichtung
         var driver = DriverCheck.Check();
@@ -173,6 +174,7 @@ public partial class App : Application
     private void OnSettingsChanged(AppSettings s)
     {
         _engine?.ApplySettings(s);
+        Loc.SetLanguage(s.Language ?? Loc.SystemDefault); // no-op if unchanged; switches live otherwise
         if (s.Theme != _appliedTheme)
         {
             _appliedTheme = s.Theme;

@@ -22,29 +22,29 @@ internal static class DriverCheck
         try
         {
             using var client = new ViGEmClient();
-            return new DriverInfo(DriverStatus.Ok, version, "ViGEmBus ist installiert und aktiv.");
+            return new DriverInfo(DriverStatus.Ok, version, UI.Loc.T("DcOk"));
         }
         catch (VigemBusNotFoundException)
         {
             return version is null
-                ? new DriverInfo(DriverStatus.NotInstalled, null, "ViGEmBus ist nicht installiert.")
+                ? new DriverInfo(DriverStatus.NotInstalled, null, UI.Loc.T("DcNotInstalled"))
                 : new DriverInfo(DriverStatus.AccessFailed, version,
-                    "ViGEmBus ist installiert, aber nicht aktiv. Meist hilft ein Neustart von Windows.");
+                    UI.Loc.T("DcInactive"));
         }
         catch (VigemBusVersionMismatchException)
         {
             return new DriverInfo(DriverStatus.VersionMismatch, version,
-                "Die installierte ViGEmBus-Version ist zu alt oder inkompatibel.");
+                UI.Loc.T("DcMismatch"));
         }
         catch (VigemBusAccessFailedException)
         {
             return new DriverInfo(DriverStatus.AccessFailed, version,
-                "Auf ViGEmBus kann nicht zugegriffen werden. Der Treiber ist eventuell beschädigt oder blockiert.");
+                UI.Loc.T("DcAccess"));
         }
         catch (Exception ex)
         {
             Log.Error("Treiberprüfung", ex);
-            return new DriverInfo(DriverStatus.Unknown, version, "Unerwarteter Fehler: " + ex.Message);
+            return new DriverInfo(DriverStatus.Unknown, version, UI.Loc.F("DcUnexpected", ex.Message));
         }
     }
 

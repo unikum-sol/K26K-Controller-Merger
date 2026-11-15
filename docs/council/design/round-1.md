@@ -1,114 +1,114 @@
-# Design-Council – Runde 1
+# Design council – round 1
 
-Grundlage: `--snapshot`-Renderings der ersten Implementierung (Einstellungen in drei Seiten, Status-Popup, Einrichtungsassistent, Tray-Symbol; jeweils Hell und Dunkel).
+Basis: `--snapshot` renderings of the first implementation (three-page settings, status popup, setup wizard, tray icon; each in light and dark mode). The UI under review was German.
 
-| Mitglied | Rolle | Score |
+| Member | Role | Score |
 |---|---|---|
-| Claude Opus | Senior Visual Designer | **7** |
-| Claude Sonnet | UX & Informationsarchitektur | **7** |
-| Claude Haiku | Accessibility & Augenkomfort | **6** |
-| Claude Fable | Kritischer Product-Design-Lead | **6** |
+| Claude Opus | Senior visual designer | **7** |
+| Claude Sonnet | UX & information architecture | **7** |
+| Claude Haiku | Accessibility & eye comfort | **6** |
+| Claude Fable | Critical product design lead | **6** |
 
 ---
 
-## Sonnet – UX & Informationsarchitektur (7/10)
+## Sonnet – UX & information architecture (7/10)
 
-**Stärken**
-- Klare Grundstruktur: Übersicht, Eingabe und Allgemein sind sauber getrennt; jede Einstellung hat eine Erklärzeile.
-- Vorbildliches Setup: ein Zweck pro Schritt, ehrliche Angaben (6 MB, Admin-Abfrage), sichtbarer Fortschritt.
-- Zustände sind farblich und textlich kodiert, Leer- und Fehlerzustand existieren.
+**Strengths**
+- Clear basic structure: Overview, Input and General are cleanly separated; every setting has an explanatory line.
+- Exemplary setup: one purpose per step, honest details (6 MB, admin prompt), visible progress.
+- States are encoded by color and text; empty and error states exist.
 
-**Probleme**
-1. Grünes „Aktiv“ bei 0 Controllern widerspricht dem Leerzustand → Zustand „Bereit – wartet auf Controller“.
-2. Fußnote zu pausierten Controllern im Leerzustand sinnlos → nur bei vorhandenen Controllern zeigen.
-3. Kennzahlen „4 ms · 250 Hz“ / „Vibration Ein“ sind Jargon und doppelt → reduzieren, Laiensprache („Spieler 2“ statt „XInput-Slot 2“).
-4. Popup: „Ausgabe/Eingabe“ abstrakt, „Aktiv“ dreifach → klarere Abschnittstitel, kein dreifaches „Aktiv“.
-5. Popup-Fehler dreimal formuliert, keine Handlung → eine Meldung + Aktion „Treiber einrichten“, Listen ausblenden.
-6. Reparatur-Dialog: Jargon-Titel, Reihenfolge widerspricht dem Text (Neustart zuerst) → umordnen, „Beenden“ → „Schließen“.
-7. „Pro Stick / Pro Achse“, „Deadzone“ unverständlich, Regel-Tabelle wirkt wie Logtext → Laienbegriffe, ganze Sätze.
-8. Komponentenliste ist Entwicklerinfo gleichrangig mit Alltagsoptionen → als „Technische Details“ nach hinten.
+**Problems**
+1. Green "Active" with 0 controllers contradicts the empty state → state "Ready – waiting for controllers".
+2. Footnote about paused controllers is pointless in the empty state → only show it when controllers exist.
+3. Metrics "4 ms · 250 Hz" / "Rumble On" are jargon and duplicated → reduce, use plain language ("player 2" instead of "XInput slot 2").
+4. Popup: "Output/Input" is abstract, "Active" appears three times → clearer section titles, no triple "Active".
+5. Popup error phrased three times, no action → one message + "Set up driver" action, hide lists.
+6. Repair dialog: jargon title, order contradicts the text (restart first) → reorder, "Quit" → "Close".
+7. "Per stick / per axis", "dead zone" not understandable, rule table reads like log text → plain terms, full sentences.
+8. Component list is developer info at the same level as everyday options → move to "Technical details".
 
-**Für 9/10 nötig:** widerspruchsfreie Zustände (ein Fehler = eine Meldung + eine Handlung), Laiensprache, knappes Popup.
-
----
-
-## Fable – Kritischer Product-Design-Lead (6/10)
-
-**Stärken**
-- Ruhige Grundstruktur, gute Abstände, Hell und Dunkel gleichwertig.
-- Gute deutsche Mikrotexte.
-- Ehrliches, vertrauensbildendes Setup.
-
-**Probleme**
-1. „Aktiv“ fünfmal im Bild, „250 Hz“ doppelt → Sidebar-Statuskarte streichen, Labels neben Schaltern entfernen.
-2. Grünes „Aktiv“ bei 0 Controllern → neutrales „Bereit“.
-3. Fehler dreimal mit drei Formulierungen → eine Meldung, ein Begriff, Sektionen ausblenden.
-4. Kein Charakter: dasselbe Gamepad-Glyph sechsmal, banale Kennzahl-Kacheln → Controller-Familien unterscheidbar machen, Hero als „N → 1“ inszenieren.
-5. „3 Controller zusammengeführt“ bei „2 von 3“ aktiv → einheitlich „2 von 3 aktiv“.
-6. Setup-Button „Wird installiert …“ während „Echtheit prüfen“ läuft; Reparatur-Reihenfolge widersprüchlich.
-7. Drei verschiedene Inhaltsbreiten; aktive Navigation im Hell-Theme kaum sichtbar.
-8. Sprachmix (Deadzone, Rumble, Buttons, Steuerkreuz); rotes „Beenden“ zu dominant.
-
-**Für 9/10 nötig:** jede Information genau einmal, eine eigene visuelle Idee statt Glyph-Wiederholung, durchgängige Systemdisziplin (Breite, Vokabular, zustandsgetreue Buttontexte).
+**Needed for 9/10:** contradiction-free states (one error = one message + one action), plain language, a concise popup.
 
 ---
 
-## Opus – Senior Visual Designer (7/10)
+## Fable – Critical product design lead (6/10)
 
-**Stärken**
-- Klare Typo-Hierarchie, Hell und Dunkel aus einem Guss, Akzent pro Theme sinnvoll.
-- Ruhige Karten mit dezenten Rändern und großzügigem Innenabstand; Popup und Einstellungen sprechen dieselbe Sprache.
-- Ordentlicher Leerzustand.
+**Strengths**
+- Calm basic structure, good spacing, light and dark of equal quality.
+- Good German microcopy.
+- Honest, trust-building setup.
 
-**Probleme**
-1. Inhaltsbreite springt je Seite (≈510/560/580 DIP) → eine einheitliche Breite.
-2. Icon-Kacheln 44 vs. 34 DIP → Textspalten versetzt → überall 40 DIP, 16 DIP Abstand.
-3. Popup-Fehler dreifach, Banner ohne Icon/Aktion → eine Meldung + Button „Treiber installieren“.
-4. Setup-Höhe springt je Zustand; Reparatur nutzt nackte Ziffern statt Kreis-Stepper → feste Höhe, einheitlicher Stil.
-5. Deaktivierter Primärbutton „Wird installiert …“ wirkt kaputt; keine Verbindungslinien zwischen Schritten.
-6. Aktiver Menüpunkt im Hell-Theme kaum sichtbar → Akzent-Tönung; Sidebar heller als Inhalt.
-7. Grünes „Aktiv“ bei 0 Controllern; Fußnote ohne Controller → neutrales „Bereit“.
-8. Tray-Punkt bei 16 px verschmilzt mit der Kontur → Ausstanzung, 6 px Durchmesser.
+**Problems**
+1. "Active" five times on screen, "250 Hz" twice → remove the sidebar status card and the labels next to switches.
+2. Green "Active" with 0 controllers → neutral "Ready".
+3. Error three times in three wordings → one message, one term, hide sections.
+4. No character: the same gamepad glyph six times, banal metric tiles → make controller families distinguishable, stage the hero as "N → 1".
+5. "3 controllers merged" while "2 of 3" are active → consistently "2 of 3 active".
+6. Setup button "Installing …" while "Verify authenticity" runs; repair order contradictory.
+7. Three different content widths; active navigation barely visible in light mode.
+8. Mixed vocabulary (German/English terms); red "Quit" too dominant.
 
-Kleinere Punkte: „Beenden“ dauerhaft rot zu alarmierend; „Deadzone/Buttons“ → „Totzone/Tasten“; Komponenten-Werte uneinheitlich (Pill vs. fetter Text).
-
-**Für 9/10 nötig:** einheitliches Raster (Breite, Fluchtlinien, Setup-Höhe), Fehler-/Leerzustände ohne Dopplung, hochwertiger Working-Zustand und 16-px-Tray-Symbol.
+**Needed for 9/10:** every piece of information exactly once, an own visual idea instead of glyph repetition, consistent system discipline (width, vocabulary, state-accurate button texts).
 
 ---
 
-## Haiku – Accessibility & Augenkomfort (6/10)
+## Opus – Senior visual designer (7/10)
 
-**Stärken**
-- Zustand nie nur über Farbe (Schalterposition + Text + Punkt).
-- Hell und Dunkel strukturell identisch.
-- Primärtext sehr gut lesbar (≈13,8:1 bzw. 17:1).
+**Strengths**
+- Clear type hierarchy, light and dark of one piece, accent sensible per theme.
+- Calm cards with subtle borders and generous padding; popup and settings speak the same language.
+- Tidy empty state.
 
-**Probleme**
-1. Tertiärtext dunkel #6F7680 auf #1C1F23 ≈ 3,6:1 → #8E96A1 (≈5,6:1).
-2. Tertiärtext hell #8A909A auf Weiß ≈ 3,2:1 → #666D78; Sekundär auf #4A515C.
-3. Erfolgs-Pills hell ≈ 3,7–4,2:1 → #1A7A4E.
-4. Aus-Zustand der Schalter ≈ 1,2–1,3:1 (WCAG 1.4.11 verlangt 3:1) → Kontur am Track.
-5. Tray-Status nur über Punktfarbe (Grün/Grau), Rot-Grün-Schwäche → zusätzlich Form (hohler Punkt), Kontur.
-6. Unbenutzter Slider-Track kaum sichtbar → ≈3:1.
-7. Aktive Navigation / aktives Segment im Hell-Theme ≈1,1:1 → Akzent-Tönung bzw. Rand.
+**Problems**
+1. Content width jumps per page (≈510/560/580 DIP) → one consistent width.
+2. Icon tiles 44 vs. 34 DIP → text columns misaligned → 40 DIP everywhere, 16 DIP spacing.
+3. Popup error three times, banner without icon/action → one message + "Install driver" button.
+4. Setup height jumps per state; repair uses bare digits instead of circle steppers → fixed height, consistent style.
+5. Disabled primary button "Installing …" looks broken; no connecting lines between steps.
+6. Active menu item barely visible in light mode → accent tint; sidebar lighter than content.
+7. Green "Active" with 0 controllers; footnote without controllers → neutral "Ready".
+8. Tray dot at 16 px merges with the outline → cut-out, 6 px diameter.
 
-**Für 9/10 nötig:** Tertiärtext ≥ 4,5:1, Nicht-Text-Kontrast ≥ 3:1 (Schalter, Slider), Tray-Status über Form.
+Minor: "Quit" permanently red is too alarming; mixed terms; component values inconsistent (pill vs. bold text).
+
+**Needed for 9/10:** consistent grid (width, alignment lines, setup height), error/empty states without duplication, a high-quality working state and 16 px tray icon.
 
 ---
 
-## Konsolidierte Maßnahmen für Runde 2
+## Haiku – Accessibility & eye comfort (6/10)
 
-| # | Maßnahme | Quelle |
+**Strengths**
+- State never by color alone (switch position + text + dot).
+- Light and dark structurally identical.
+- Primary text very legible (≈13.8:1 and 17:1).
+
+**Problems**
+1. Tertiary text dark #6F7680 on #1C1F23 ≈ 3.6:1 → #8E96A1 (≈5.6:1).
+2. Tertiary text light #8A909A on white ≈ 3.2:1 → #666D78; secondary to #4A515C.
+3. Success pills in light mode ≈ 3.7–4.2:1 → #1A7A4E.
+4. Switch off-state ≈ 1.2–1.3:1 (WCAG 1.4.11 requires 3:1) → outline on the track.
+5. Tray state by dot color only (green/gray), red-green deficiency → also shape (hollow dot), outline.
+6. Unfilled slider track barely visible → ≈3:1.
+7. Active navigation / active segment in light mode ≈1.1:1 → accent tint or border.
+
+**Needed for 9/10:** tertiary text ≥ 4.5:1, non-text contrast ≥ 3:1 (switches, slider), tray state by shape.
+
+---
+
+## Consolidated actions for round 2
+
+| # | Action | Source |
 |---|---|---|
-| 1 | Ehrliche Zustände: „Aktiv“ nur mit ≥1 aktivem Controller, sonst „Bereit“ (neutral) bzw. „Pausiert“; Zusammenfassung „2 von 3 Controllern aktiv“ | alle |
-| 2 | Jede Information genau einmal: Sidebar-Statuskarte, Kennzahl-Kacheln und Schalter-Labels entfernt | Fable, Sonnet |
-| 3 | Hero „N → 1“: aktive Controller als Chips → Pfeil → virtueller Controller | Fable |
-| 4 | Controller-Familien unterscheidbar (Monogramm-Kacheln PS/XB/NS …) | Fable |
-| 5 | Ein Fehler = eine Meldung + eine Handlung („Treiber einrichten“) im Popup und in der Übersicht | Sonnet, Opus, Fable |
-| 6 | Laiensprache: Spieler 2 statt XInput-Slot, Totzone, Vibration, Tasten, „Ganzer Stick / Einzelne Achsen“, Regeln als ganze Sätze | Sonnet, Fable, Opus |
-| 7 | Technische Details (Treiber, SDL, Anschluss) nach hinten, Werte einheitlich als Text | Sonnet, Opus |
-| 8 | Einheitliche Inhaltsbreite, 40-DIP-Kacheln mit 16 DIP Abstand | Opus, Fable |
-| 9 | Kontrast: Tertiär/Sekundär/Erfolg angehoben, Schalter-Aus mit Kontur, Slider-Track ≥3:1, Navigation/Segmente mit Akzent-Tönung bzw. Rand | Haiku, Opus |
-| 10 | Setup: feste Höhe, Verbindungslinien, zustandsgetreuer Buttontext ohne „kaputten“ Disabled-Look, Reparatur-Hinweise im Stepper-Stil und nach Wahrscheinlichkeit sortiert | Opus, Sonnet, Fable |
-| 11 | Popup: „Beenden“ neutral (Rot nur bei Hover), klare Abschnittstitel | Opus, Fable, Sonnet |
-| 12 | Tray: Status zusätzlich über Form (gefüllt / hohl / Ausrufezeichen), größere Ausstanzung bei 16 px | Haiku, Opus |
+| 1 | Honest states: "Active" only with ≥1 active controller, otherwise "Ready" (neutral) or "Paused"; summary "2 of 3 controllers active" | all |
+| 2 | Every piece of information exactly once: sidebar status card, metric tiles and switch labels removed | Fable, Sonnet |
+| 3 | Hero "N → 1": active controllers as chips → virtual controller | Fable |
+| 4 | Controller families distinguishable (monogram tiles PS/XB/NS …) | Fable |
+| 5 | One error = one message + one action ("Set up driver") in popup and overview | Sonnet, Opus, Fable |
+| 6 | Plain language: player 2 instead of XInput slot, consistent terms, "whole stick / individual axes", rules as full sentences | Sonnet, Fable, Opus |
+| 7 | Technical details (driver, SDL, port) moved to the end, values consistently as text | Sonnet, Opus |
+| 8 | Consistent content width, 40 DIP tiles with 16 DIP spacing | Opus, Fable |
+| 9 | Contrast: tertiary/secondary/success raised, switch off-state with outline, slider track ≥3:1, navigation/segments with accent tint or border | Haiku, Opus |
+| 10 | Setup: fixed height, connecting lines, state-accurate button text without a "broken" disabled look, repair hints in stepper style sorted by likelihood | Opus, Sonnet, Fable |
+| 11 | Popup: "Quit" neutral (red only on hover), clear section titles | Opus, Fable, Sonnet |
+| 12 | Tray: state also by shape (filled / hollow / exclamation mark), bigger cut-out at 16 px | Haiku, Opus |

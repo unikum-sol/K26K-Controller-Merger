@@ -23,6 +23,7 @@ internal static class SnapshotRenderer
     public static void Run(string dir)
     {
         Directory.CreateDirectory(dir);
+        Loc.SetLanguage(UiLanguage.German); // Grundrenderings immer auf Deutsch
         var store = new SettingsStore(persist: false);
         store.Update(s => s.DisabledDevices.Add("switch"));
         var vm = new MainViewModel(store, () => { }, () => { }, () => { });
@@ -83,6 +84,25 @@ internal static class SnapshotRenderer
             }
             vm.UpdateDriver(new DriverInfo(DriverStatus.Ok, "1.22.0", ""));
         }
+
+        // Englische Varianten (Layout-Prüfung der zweiten Sprache)
+        vm.Language = UiLanguage.English;
+        Loc.SetLanguage(UiLanguage.English);
+        ThemeManager.Force(dark: true);
+        vm.Update(running);
+        foreach (var page in Enum.GetValues<SettingsWindow.Page>())
+        {
+            var w = new SettingsWindow { DataContext = vm };
+            w.ShowPage(page);
+            RenderWindow(w, 920, 680, Path.Combine(dir, $"en-settings-{page.ToString().ToLowerInvariant()}-dark.png"));
+        }
+        var enBackdrop = new SolidColorBrush(Color.FromRgb(0x2A, 0x2F, 0x38));
+        RenderWindow(new StatusPopup { DataContext = vm }, 384, null, Path.Combine(dir, "en-popup-dark.png"), enBackdrop);
+        RenderWindow(new SetupWindow { DataContext = new SetupViewModel(new DriverInfo(DriverStatus.NotInstalled, null, ""), firstRun: true) },
+            540, 600, Path.Combine(dir, "en-setup-welcome-dark.png"));
+        RenderWindow(new SetupWindow { DataContext = new SetupViewModel(new DriverInfo(DriverStatus.AccessFailed, "1.22.0", ""), firstRun: false) },
+            540, 600, Path.Combine(dir, "en-setup-repair-dark.png"));
+        Loc.SetLanguage(UiLanguage.German);
 
         foreach (var state in Enum.GetValues<TrayState>())
             foreach (bool light in new[] { false, true })

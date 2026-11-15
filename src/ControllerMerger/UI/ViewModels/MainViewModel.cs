@@ -25,6 +25,7 @@ internal sealed class MainViewModel : ObservableObject
         OpenSettingsCommand = new RelayCommand(openSettings);
         ExitCommand = new RelayCommand(exit);
         RepairDriverCommand = new RelayCommand(() => repairDriver?.Invoke(), () => repairDriver is not null);
+        Loc.Changed += OnLanguageChanged;
         OpenLogCommand = new RelayCommand(() =>
         {
             try
@@ -59,21 +60,21 @@ internal sealed class MainViewModel : ObservableObject
     public bool CanRepair => _snapshot.State == EngineState.DriverMissing;
 
     public string ProblemTitle => _snapshot.State == EngineState.DriverMissing
-        ? "Der Controller-Treiber fehlt"
-        : "Zusammenführen gestoppt";
+        ? Loc.T("ProblemDriverTitle")
+        : Loc.T("ProblemStoppedTitle");
 
     public string ProblemText => _snapshot.State == EngineState.DriverMissing
-        ? "Ohne diesen Treiber kann kein virtueller Controller erstellt werden."
-        : _snapshot.Message ?? "Ein unerwarteter Fehler ist aufgetreten. Details stehen in der Logdatei.";
+        ? Loc.T("ProblemDriverText")
+        : _snapshot.Message ?? Loc.T("ProblemUnknownText");
 
     public string StatusText => _snapshot.State switch
     {
-        EngineState.DriverMissing or EngineState.Error => "Fehler",
-        EngineState.Running when _snapshot.VirtualSlot < 0 => "Verbindet",
-        EngineState.Running when ActiveCount > 0 => "Aktiv",
-        EngineState.Running when PadCount > 0 => "Pausiert",
-        EngineState.Running => "Bereit",
-        _ => "Startet",
+        EngineState.DriverMissing or EngineState.Error => Loc.T("StError"),
+        EngineState.Running when _snapshot.VirtualSlot < 0 => Loc.T("StConnecting"),
+        EngineState.Running when ActiveCount > 0 => Loc.T("StActive"),
+        EngineState.Running when PadCount > 0 => Loc.T("StPaused"),
+        EngineState.Running => Loc.T("StReady"),
+        _ => Loc.T("StStarting"),
     };
 
     public BadgeKind StatusKind => _snapshot.State switch
@@ -87,43 +88,43 @@ internal sealed class MainViewModel : ObservableObject
     /// <summary>Kurzform für den Popup-Kopf: "2 von 3 Controllern aktiv".</summary>
     public string HeaderSummary => _snapshot.State switch
     {
-        EngineState.Running when PadCount == 0 => "Wartet auf Controller",
-        EngineState.Running when ActiveCount == 0 => "Alle Controller pausiert",
-        EngineState.Running when ActiveCount == PadCount => ActiveCount == 1 ? "1 Controller aktiv" : $"{ActiveCount} Controller aktiv",
-        EngineState.Running => $"{ActiveCount} von {PadCount} Controllern aktiv",
-        EngineState.DriverMissing => "Controller-Treiber fehlt",
-        EngineState.Error => "Zusammenführen gestoppt",
-        _ => "Wird gestartet …",
+        EngineState.Running when PadCount == 0 => Loc.T("HdWaiting"),
+        EngineState.Running when ActiveCount == 0 => Loc.T("HdAllPaused"),
+        EngineState.Running when ActiveCount == PadCount => ActiveCount == 1 ? Loc.T("HdOneActive") : Loc.F("HdNActive", ActiveCount),
+        EngineState.Running => Loc.F("HdSomeActive", ActiveCount, PadCount),
+        EngineState.DriverMissing => Loc.T("HdDriverMissing"),
+        EngineState.Error => Loc.T("HdStopped"),
+        _ => Loc.T("HdStarting"),
     };
 
     /// <summary>Was Spiele sehen – in Laiensprache ("Spieler 2" statt "XInput-Slot 1").</summary>
     public string VirtualDetail => _snapshot.State switch
     {
-        EngineState.Running when Connected => $"Für Spiele sichtbar als Spieler {_snapshot.VirtualSlot + 1}",
-        EngineState.Running => "Wird mit Windows verbunden …",
-        EngineState.Starting => "Wird eingerichtet …",
-        _ => "Spiele sehen gerade keinen Controller",
+        EngineState.Running when Connected => Loc.F("VdVisibleAs", _snapshot.VirtualSlot + 1),
+        EngineState.Running => Loc.T("VdConnecting"),
+        EngineState.Starting => Loc.T("VdStarting"),
+        _ => Loc.T("VdNone"),
     };
 
-    public string PlayerText => Connected ? $"Spieler {_snapshot.VirtualSlot + 1}" : "–";
+    public string PlayerText => Connected ? Loc.F("Player", _snapshot.VirtualSlot + 1) : "–";
 
     public string PadsSummary => PadCount switch
     {
-        0 => "Keine verbunden",
-        1 => "1 verbunden",
-        var n => $"{n} verbunden",
+        0 => Loc.T("PsNone"),
+        1 => Loc.T("PsOne"),
+        var n => Loc.F("PsN", n),
     };
 
     public string RateText => _snapshot.RateHz > 0 ? $"{_snapshot.RateHz:0} Hz" : "–";
 
     public string DriverVersionText => _driver.IsOk
-        ? _driver.Version ?? "installiert"
+        ? _driver.Version ?? Loc.T("DrvInstalled")
         : _driver.Status switch
         {
-            DriverStatus.NotInstalled => "Nicht installiert",
-            DriverStatus.VersionMismatch => "Veraltet",
-            DriverStatus.AccessFailed => "Nicht aktiv",
-            _ => "Unbekannt",
+            DriverStatus.NotInstalled => Loc.T("DrvNotInstalled"),
+            DriverStatus.VersionMismatch => Loc.T("DrvOutdated"),
+            DriverStatus.AccessFailed => Loc.T("DrvInactive"),
+            _ => Loc.T("DrvUnknown"),
         };
 
     public bool DriverOk => _driver.IsOk;
@@ -131,7 +132,7 @@ internal sealed class MainViewModel : ObservableObject
     public string SdlVersionText => _snapshot.SdlVersion;
 
     public string AppVersionText =>
-        Assembly.GetExecutingAssembly().GetName().Version is { } v ? $"Version {v.Major}.{v.Minor}.{v.Build}" : "";
+        Assembly.GetExecutingAssembly().GetName().Version is { } v ? Loc.F("Version", $"{v.Major}.{v.Minor}.{v.Build}") : "";
 
     public void Update(EngineSnapshot snapshot)
     {
@@ -231,5 +232,19 @@ internal sealed class MainViewModel : ObservableObject
     {
         get => S.Theme;
         set { if (S.Theme != value) Change(s => s.Theme = value, nameof(Theme)); }
+    }
+
+    /// <summary>Effective UI language (explicit choice or Windows display language).</summary>
+    public UiLanguage Language
+    {
+        get => S.Language ?? Loc.SystemDefault;
+        set { if (Language != value || S.Language is null) Change(s => s.Language = value, nameof(Language)); }
+    }
+
+    /// <summary>After a language switch: recompute all computed texts (pad details etc.) and refresh every binding.</summary>
+    private void OnLanguageChanged()
+    {
+        Update(_snapshot);
+        Raise(string.Empty);
     }
 }

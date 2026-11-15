@@ -2,14 +2,6 @@ using System.Windows;
 
 namespace ControllerMerger.UI;
 
-/// <summary>Feste Texte, die als Liste im XAML verwendet werden.</summary>
-public static class SettingsTexts
-{
-    public const string RuleButtons = "Eine Taste gilt als gedrückt, sobald sie an irgendeinem Controller gedrückt ist.";
-    public const string RuleTriggers = "Bei den Triggern zählt der stärkere Druck.";
-    public const string RuleDpad = "Drücken zwei Controller gegensätzliche Richtungen am Steuerkreuz, heben sie sich auf.";
-}
-
 /// <summary>Einstellungsfenster (Doppelklick auf das Tray-Symbol). Wird bei Bedarf erzeugt und beim Schließen freigegeben.</summary>
 public partial class SettingsWindow : Window
 {

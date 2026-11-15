@@ -2,7 +2,7 @@
 
 **All your gamepads as one single Xbox 360 controller.** K26K Controller Merger permanently creates a virtual Xbox 360 controller through ViGEmBus and merges the input of every connected controller into it. It's ideal for helping a child on a second controller: both of you steer the same character at the same time.
 
-![Overview](docs/design/screenshots/settings-overview-dark.png)
+![Overview](docs/design/screenshots/en-settings-overview-dark.png)
 
 ## Features
 
@@ -19,9 +19,9 @@
 - **Supported controllers:** XInput (Xbox 360/One/Series), DualShock 4, DualSense, Switch Pro, Joy-Cons, generic DirectInput/HID gamepads, and Switch 2 controllers (experimental, see below).
 - **Low latency:** polling every 1, 2, 4 (default) or 8 ms with a high-resolution timer, at about 0.03 % CPU when idle (measured).
 - **Tray app:** right-click shows the status, double-click opens the settings. Light and dark mode follow Windows.
+- **German and English UI**, switchable live in the settings. The default follows the Windows display language.
 - **Autostart** can be turned on in the settings.
 
-> The user interface is currently in German.
 
 ## Installation (users)
 
@@ -52,9 +52,9 @@ If the driver is missing or broken on a later start, a repair view with step-by-
 
 | Page | Options |
 |---|---|
-| Overview (Übersicht) | Virtual controller status, "controlled by", list of all controllers with a switch to pause each one |
-| Input (Eingabe) | Stick merge mode, dead zone (sticks/triggers), invert axes, polling interval |
-| General (Allgemein) | Forward rumble, start with Windows, color scheme, technical details, help, log file |
+| Overview | Virtual controller status, "controlled by", list of all controllers with a switch to pause each one |
+| Input | Stick merge mode, dead zone (sticks/triggers), invert axes, polling interval |
+| General | Forward rumble, start with Windows, color scheme, language (Deutsch/English), technical details, help, log file |
 
 Settings are stored in `%APPDATA%\K26KControllerMerger\settings.json`, the log in `%LOCALAPPDATA%\K26KControllerMerger\log.txt`.
 
@@ -102,7 +102,7 @@ powershell -ExecutionPolicy Bypass -File tools/fetch-sdl.ps1
 |---|---|
 | **A game reacts twice** | The game sees the real controllers in addition to the virtual one. Select the virtual Xbox 360 controller in the game. If that doesn't help, hide the real controllers with [HidHide](https://github.com/nefarius/HidHide). |
 | PlayStation/Switch controller not detected while Steam is running | Steam Input or DS4Windows can hold the device exclusively. Disable Steam Input for that device or close the other tool. |
-| "Der Controller-Treiber läuft nicht" (driver not running) | Restart Windows. Then reinstall the driver from the wizard and check whether Memory Integrity or an antivirus is blocking it. |
+| "The controller driver is not running" | Restart Windows. Then reinstall the driver from the wizard and check whether Memory Integrity or an antivirus is blocking it. |
 | More than 3 Xbox controllers | XInput only has 4 slots, and the virtual controller uses one of them. |
 | SmartScreen warning | The EXE is not code-signed. |
 
@@ -115,7 +115,6 @@ SDL 3.4 includes a HIDAPI driver for Switch 2 controllers, and K26K Controller M
 - [Architecture council](docs/council/architecture-council.md): language, libraries, UI framework, distribution and security, with scores
 - [Design council](docs/council/design-council.md): three iteration rounds until every member rated 9/10
 
-The architecture and council documents are written in German.
 
 **In short:**
 - **C# / .NET 10 + WPF:** Nefarius.ViGEm.Client is the reference implementation, and WPF allows a fully custom design system.

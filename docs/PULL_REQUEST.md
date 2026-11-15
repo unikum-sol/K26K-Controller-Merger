@@ -14,7 +14,7 @@ This change adds a tray tool for Windows 10/11 x64. It permanently creates **one
 | Output | Nefarius.ViGEm.Client; automatic reconnect; rumble forwarded to all active controllers |
 | Feedback-loop protection | XInput backend enforced, own slot (`UserIndex`) filtered out, quarantine until the slot is known; verified in the log |
 | First-run setup | Wizard: download ViGEmBus 1.22.0 → SHA-256 + Authenticode (pinned publisher) → elevated install → verification → restart with automatic relaunch if needed |
-| UI | Tray (right-click status popup, double-click settings), custom design system with light/dark following Windows |
+| UI | Tray (right-click status popup, double-click settings), custom design system with light/dark following Windows, German/English switchable live |
 | Settings | Dead zone, stick mode, invert axes, polling interval, rumble, autostart, color scheme, pause individual controllers |
 | Quality | 20 unit tests (merge logic, settings), structured logging, atomic settings writes, single instance |
 | Distribution | Self-contained single-file EXE (≈ 73 MB compressed), no .NET install needed |
@@ -23,7 +23,7 @@ This change adds a tray tool for Windows 10/11 x64. It permanently creates **one
 ## Decision process
 
 ### Architecture council (Claude Opus · Sonnet · Haiku)
-Full record with all scores (German): [`docs/council/architecture-council.md`](council/architecture-council.md)
+Full record with all scores: [`docs/council/architecture-council.md`](council/architecture-council.md)
 
 - **C# / .NET 10** (unanimous; 8/9/9), ahead of Rust (4–5) and C++ (3–6)
 - **SDL3** (unanimous; 9), ahead of Windows.Gaming.Input and custom HID parsers
@@ -36,10 +36,10 @@ Full record with all scores (German): [`docs/council/architecture-council.md`](c
 - No HidHide; a hint in the settings and the README instead
 - Stick merge mode switchable, default *whole stick*
 - Individual controllers can be paused (no per-controller settings, no live view, no connection notifications)
-- German UI; English README
+- German and English UI (switchable in the settings); English README and docs
 
 ### Design council (Claude Opus · Sonnet · Haiku · Fable)
-Process and all rounds (German): [`docs/council/design-council.md`](council/design-council.md)
+Process and all rounds: [`docs/council/design-council.md`](council/design-council.md)
 
 | Round | Opus | Sonnet | Haiku | Fable |
 |---|---|---|---|---|

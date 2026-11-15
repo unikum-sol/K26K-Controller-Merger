@@ -40,10 +40,10 @@ public sealed class PadViewModel(string key, Action<string, bool> setEnabled) : 
         }
     }
 
-    public string StateText => IsEnabled ? "Aktiv" : "Pausiert";
+    public string StateText => Loc.T(IsEnabled ? "Active" : "Paused");
 
     /// <summary>Detailzeile für pausierte Controller: "Pausiert · PlayStation · …".</summary>
-    public string PausedDetail => "Pausiert · " + Detail;
+    public string PausedDetail => Loc.T("Paused") + " · " + Detail;
 
     public void Update(PadSnapshot p)
     {
@@ -54,13 +54,13 @@ public sealed class PadViewModel(string key, Action<string, bool> setEnabled) : 
         var parts = new List<string>(3) { Family };
         parts.Add(p.Connection switch
         {
-            ConnectionKind.Usb => "USB",
-            ConnectionKind.Bluetooth => "Bluetooth",
-            _ => "Verbunden",
+            ConnectionKind.Usb => Loc.T("ConnUsb"),
+            ConnectionKind.Bluetooth => Loc.T("ConnBt"),
+            _ => Loc.T("ConnOther"),
         });
         if (p.BatteryPercent >= 0)
-            parts.Add(p.Charging ? $"Lädt · {p.BatteryPercent} %" : $"Akku {p.BatteryPercent} %");
-        if (!p.HasRumble) parts.Add("ohne Vibration");
+            parts.Add(Loc.F(p.Charging ? "BatCharging" : "Battery", p.BatteryPercent));
+        if (!p.HasRumble) parts.Add(Loc.T("NoRumble"));
         Detail = string.Join(" · ", parts);
         Raise(nameof(PausedDetail));
 
