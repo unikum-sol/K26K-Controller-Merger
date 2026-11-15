@@ -22,6 +22,18 @@
 - **German and English UI**, switchable live in the settings. The default follows the Windows display language.
 - **Autostart** can be turned on in the settings.
 
+## Ideal for Moonlight / Sunshine game streaming
+
+K26K Controller Merger is a natural fit when you stream games from your Windows PC with [Sunshine](https://github.com/LizardByte/Sunshine) (host) to [Moonlight](https://moonlight-stream.org) (client, e.g. on a TV, tablet or handheld):
+
+- **Streamed and local controllers become one.** Sunshine turns every controller connected to a Moonlight client into its own virtual gamepad on the host (Xbox 360 by default). K26K Controller Merger picks these up like any other controller and merges them with the controllers plugged into the PC. Someone in the living room on Moonlight and someone at the PC can then steer the same character together, perfect for helping out without handing over the controller.
+- **Single-player games only listen to player 1.** If two Moonlight users (or one streamed and one local controller) play, many games react to only one of them. Because the merged virtual controller is a single device, both inputs reach the game no matter which controller the game picks up.
+- **No extra driver.** Sunshine on Windows already uses ViGEmBus for gamepad emulation. If it is installed, the setup wizard detects it and skips the driver installation.
+- **Steady controller for the game.** Moonlight clients connect and disconnect while the merged controller stays put. Games don't lose their controller when a streaming session ends or a pad reconnects, and controller order in Windows doesn't matter anymore.
+- **Low overhead on the streaming host.** About 0.03 % CPU when idle and a 4 ms default polling interval add practically nothing to encoding load or input latency.
+
+**Tip:** the game may see Sunshine's per-client controllers in addition to the merged one. Select the virtual Xbox 360 controller in the game. If needed, hide the other controllers with [HidHide](https://github.com/nefarius/HidHide) and add `K26KControllerMerger.exe` to HidHide's application list so it can still read them. Note that XInput has 4 slots in total: Sunshine's controllers, local Xbox controllers and the merged controller share them.
+
 
 ## Installation (users)
 
