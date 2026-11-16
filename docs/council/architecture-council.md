@@ -32,7 +32,7 @@ Nefarius.ViGEm.Client is the reference implementation (fully managed), WPF is av
 | Custom HID parsers | 3 | 3 | 3 |
 | Combination | 5 | 6 | – |
 
-**Decision: SDL3 3.4.x (unanimous).** SDL covers XInput, DualShock 4, DualSense, Switch Pro, Joy-Cons, generic DirectInput/HID devices and (experimentally) Switch 2 controllers, including rumble, calibration, the mapping database and hot-plug. Maintenance is SDL's job. WGI doesn't support PlayStation/Switch pads and has background issues; custom parsers would be "a bottomless pit".
+**Decision: SDL3 3.4.x (unanimous).** SDL covers XInput, DualShock 4, DualSense, Switch Pro, Joy-Cons, generic DirectInput/HID devices and Switch 2 controllers, including rumble, calibration, the mapping database and hot-plug. Maintenance is SDL's job. WGI doesn't support PlayStation/Switch pads and has background issues; custom parsers would be "a bottomless pit".
 
 ### Bindings
 

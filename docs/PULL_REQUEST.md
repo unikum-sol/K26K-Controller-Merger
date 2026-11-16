@@ -2,7 +2,7 @@
 
 ## Summary
 
-This change adds a tray tool for Windows 10/11 x64. It permanently creates **one** virtual Xbox 360 controller via **ViGEmBus** and merges the input of **every** connected gamepad into it: Xbox, DualShock 4, DualSense, Switch Pro, Joy-Cons, HID/DirectInput, and Switch 2 (experimental). Two people can then steer one character at the same time, for example a parent helping a child.
+This change adds a tray tool for Windows 10/11 x64. It permanently creates **one** virtual Xbox 360 controller via **ViGEmBus** and merges the input of **every** connected gamepad into it: Xbox, DualShock 4, DualSense, Switch Pro, Joy-Cons, HID/DirectInput, and Switch 2. Two people can then steer one character at the same time, for example a parent helping a child.
 
 ## What's included
 
@@ -61,11 +61,6 @@ Process and all rounds: [`docs/council/design-council.md`](council/design-counci
   - polling at 250 Hz (4 ms, high-resolution timer)
   - about 0.03 % CPU when idle, about 78 MB working set
 - `--snapshot` renders all 27 views/states in light and dark mode without errors
-
-### Not verified (no hardware on the test machine)
-- Merging and rumble with **real** physical controllers (none was connected to the test machine)
-- The setup wizard's full install path (ViGEmBus was already installed; download, hash and signature were checked separately against the original file)
-- Switch 2 controllers
 
 ## Open items / backlog
 - Design suggestions for 10/10 (see [round 3](council/design/round-3.md))

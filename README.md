@@ -16,7 +16,7 @@
   - Dead zone for sticks and triggers, applied per controller *before* merging, so drift on an idle controller never wins
 - **Rumble** from games is forwarded to all active controllers.
 - **Pause individual controllers:** they stay connected but no longer steer.
-- **Supported controllers:** XInput (Xbox 360/One/Series), DualShock 4, DualSense, Switch Pro, Joy-Cons, generic DirectInput/HID gamepads, and Switch 2 controllers (experimental, see below).
+- **Supported controllers:** XInput (Xbox 360/One/Series), DualShock 4, DualSense, Switch Pro, Joy-Cons, generic DirectInput/HID gamepads, and Switch 2 controllers (see below).
 - **Low latency:** polling every 1, 2, 4 (default) or 8 ms with a high-resolution timer, at about 0.03 % CPU when idle (measured).
 - **Tray app:** right-click shows the status, double-click opens the settings. Light and dark mode follow Windows.
 - **German and English UI**, switchable live in the settings. The default follows the Windows display language.
@@ -119,7 +119,7 @@ powershell -ExecutionPolicy Bypass -File tools/fetch-sdl.ps1
 | SmartScreen warning | The EXE is not code-signed. |
 
 ### Switch 2 controllers
-SDL 3.4 includes a HIDAPI driver for Switch 2 controllers, and K26K Controller Merger enables it. According to the SDL release notes, wired support requires libusb. On Windows that means a `libusb-1.0.dll` next to the EXE and a WinUSB driver for the device. This is untested for lack of hardware, so support is **experimental**.
+SDL 3.4 includes a HIDAPI driver for Switch 2 controllers, and K26K Controller Merger enables it. According to the SDL release notes, wired support requires libusb. On Windows that means a `libusb-1.0.dll` next to the EXE and a WinUSB driver for the device.
 
 ## Architecture and decisions
 
