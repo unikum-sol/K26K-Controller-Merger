@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ControllerMerger.Core;
 using ControllerMerger.Engine;
+using ControllerMerger.HidHide;
 using ControllerMerger.Services;
 using ControllerMerger.Setup;
 using ControllerMerger.UI.ViewModels;
@@ -25,8 +26,13 @@ internal static class SnapshotRenderer
         Directory.CreateDirectory(dir);
         Loc.SetLanguage(UiLanguage.German); // Grundrenderings immer auf Deutsch
         var store = new SettingsStore(persist: false);
-        store.Update(s => s.DisabledDevices.Add("switch"));
-        var vm = new MainViewModel(store, () => { }, () => { }, () => { });
+        store.Update(s =>
+        {
+            s.DisabledDevices.Add("switch");
+            s.HiddenDevices.Add(@"HID\VID_054C&PID_0CE6\DS");
+        });
+        var hide = new FakeHide();
+        var vm = new MainViewModel(store, () => { }, () => { }, () => { }, hide);
         vm.UpdateDriver(new DriverInfo(DriverStatus.Ok, "1.22.0", ""));
 
         var pads = new List<PadSnapshot>
@@ -46,6 +52,7 @@ internal static class SnapshotRenderer
             ThemeManager.Force(dark);
             var backdrop = new SolidColorBrush(dark ? Color.FromRgb(0x2A, 0x2F, 0x38) : Color.FromRgb(0xC9, 0xD2, 0xDE));
 
+            hide.Status = HidHideStatus.Ready;
             vm.Update(running);
             foreach (var page in Enum.GetValues<SettingsWindow.Page>())
             {
@@ -55,6 +62,15 @@ internal static class SnapshotRenderer
             }
 
             RenderWindow(new StatusPopup { DataContext = vm }, 384, null, Path.Combine(dir, $"popup-{t}.png"), backdrop);
+
+            // Verstecken: HidHide fehlt bzw. braucht einen Neustart (Fenster hoch genug für die ganze Übersicht).
+            hide.Status = HidHideStatus.NotInstalled;
+            vm.Update(running);
+            RenderWindow(new SettingsWindow { DataContext = vm }, 920, 860, Path.Combine(dir, $"settings-hidhide-setup-{t}.png"));
+            hide.Status = HidHideStatus.RestartRequired;
+            vm.Update(running);
+            RenderWindow(new SettingsWindow { DataContext = vm }, 920, 860, Path.Combine(dir, $"settings-hidhide-restart-{t}.png"));
+            hide.Status = HidHideStatus.Ready;
 
             vm.Update(empty);
             RenderWindow(new SettingsWindow { DataContext = vm }, 920, 680, Path.Combine(dir, $"settings-empty-{t}.png"));
@@ -96,6 +112,11 @@ internal static class SnapshotRenderer
             w.ShowPage(page);
             RenderWindow(w, 920, 680, Path.Combine(dir, $"en-settings-{page.ToString().ToLowerInvariant()}-dark.png"));
         }
+        hide.Status = HidHideStatus.NotInstalled;
+        vm.Update(running);
+        RenderWindow(new SettingsWindow { DataContext = vm }, 920, 860, Path.Combine(dir, "en-settings-hidhide-setup-dark.png"));
+        hide.Status = HidHideStatus.Ready;
+        vm.Update(running);
         var enBackdrop = new SolidColorBrush(Color.FromRgb(0x2A, 0x2F, 0x38));
         RenderWindow(new StatusPopup { DataContext = vm }, 384, null, Path.Combine(dir, "en-popup-dark.png"), enBackdrop);
         RenderWindow(new SetupWindow { DataContext = new SetupViewModel(new DriverInfo(DriverStatus.NotInstalled, null, ""), firstRun: true) },
@@ -109,6 +130,21 @@ internal static class SnapshotRenderer
                 SaveTrayPreview(state, light, Path.Combine(dir, $"tray-{state.ToString().ToLowerInvariant()}-{(light ? "light" : "dark")}.png"));
 
         Log.Info($"Snapshots geschrieben nach {Path.GetFullPath(dir)}");
+    }
+
+    /// <summary>Beispiel-Zustand fürs Verstecken: DualSense ist versteckt, der Switch-Controller nicht zuordenbar.</summary>
+    private sealed class FakeHide : IHideSource
+    {
+        public HidHideStatus Status { get; set; } = HidHideStatus.Ready;
+        public string? ProblemKey => null;
+        public PadHideInfo? Get(string padKey) => padKey switch
+        {
+            "ds" => new(@"HID\VID_054C&PID_0CE6\DS", Status == HidHideStatus.Ready),
+            "xb" => new(@"USB\VID_045E&PID_0B12\XB", Status == HidHideStatus.Ready),
+            _ => new(null, false),
+        };
+        public event Action? Changed { add { } remove { } }
+        public void Refresh() { }
     }
 
     /// <summary>Löst den Inhalt aus dem (nie angezeigten) Fenster, layoutet ihn und rendert ihn als PNG.</summary>

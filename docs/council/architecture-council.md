@@ -126,7 +126,7 @@ To Windows, our own virtual Xbox 360 controller looks like a real XInput device.
 |---|---|
 | Feedback loop / slot race on hot-plug | Section 3: quarantine, order ViGEm → SDL, slot re-check |
 | ViGEmBus is end-of-life and may be blocked by updates/HVCI | Driver encapsulated in `VirtualPad`; status check at startup; automatic reconnect every 2 s; repair wizard with concrete steps |
-| Duplicate input in games | Per the user's decision **no HidHide**; a clear hint in the settings instead |
+| Duplicate input in games | Per the user's decision **no HidHide** in 1.0; a clear hint in the settings instead. Since 1.3, controllers can be hidden in the app (see below). |
 | HIDAPI conflicts with Steam/DS4Windows | Documented in the README (troubleshooting) |
 | SmartScreen for an unsigned EXE | Documented; code signing recommended for releases |
 
@@ -138,7 +138,10 @@ As specified, the council only decided on architecture and implementation. Featu
 
 | Question | User's decision |
 |---|---|
-| Handling of duplicate input (HidHide) | **No HidHide**, only a hint |
+| Handling of duplicate input (HidHide) | **No HidHide**, only a hint (1.0; changed by the user in 1.3) |
 | Stick merge mode | **Switchable, default "whole stick"** (plus "per axis" as originally specified) |
 | Extra features | **Pause individual controllers** (no per-pad settings, no live view, no connection notifications) |
 | UI language / PR | **German UI**, initially local git only. Later: project name "K26K Controller Merger", English README and docs, public GitHub repo with release, **DE/EN language switch in the settings** |
+
+## Version 1.3: hiding controllers
+The HidHide integration had its own architecture council (own P/Invoke layer, XInput mapping, ownership journal, worker thread): [v1.3-hide-controllers.md](v1.3-hide-controllers.md).

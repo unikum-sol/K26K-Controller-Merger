@@ -39,6 +39,12 @@ public sealed class AppSettings
     /// <summary>Geräteschlüssel der Controller, deren Eingaben NICHT übernommen werden.</summary>
     public List<string> DisabledDevices { get; set; } = [];
 
+    /// <summary>
+    /// Windows-Geräteinstanz-IDs der Controller, die per HidHide vor anderen Programmen versteckt werden
+    /// (nur solange die App läuft).
+    /// </summary>
+    public List<string> HiddenDevices { get; set; } = [];
+
     public AppSettings Normalize()
     {
         StickDeadzonePercent = Math.Clamp(StickDeadzonePercent, 0, 40);
@@ -48,6 +54,8 @@ public sealed class AppSettings
         if (Language is { } lang && !Enum.IsDefined(lang)) Language = null;
         if (!PollingIntervals.Contains(PollingIntervalMs)) PollingIntervalMs = 4;
         DisabledDevices = (DisabledDevices ?? []).Where(k => !string.IsNullOrWhiteSpace(k)).Distinct().ToList();
+        HiddenDevices = (HiddenDevices ?? []).Where(k => !string.IsNullOrWhiteSpace(k))
+            .Distinct(StringComparer.OrdinalIgnoreCase).ToList();
         return this;
     }
 

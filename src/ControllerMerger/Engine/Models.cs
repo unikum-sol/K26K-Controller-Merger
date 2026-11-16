@@ -37,7 +37,9 @@ public sealed record PadSnapshot(
     bool Enabled,
     int XInputSlot,
     ushort VendorId,
-    ushort ProductId);
+    ushort ProductId,
+    string? DevicePath = null,
+    bool IsXInput = false);
 
 /// <summary>Unveränderliche Momentaufnahme der gesamten Engine (wird ~10× pro Sekunde erzeugt).</summary>
 public sealed record EngineSnapshot(

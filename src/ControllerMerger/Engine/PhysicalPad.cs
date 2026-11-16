@@ -20,6 +20,9 @@ internal sealed class PhysicalPad
     public required ushort Vendor { get; init; }
     public required ushort Product { get; init; }
 
+    /// <summary>SDL-Gerätepfad (HID-Schnittstellenpfad oder "XInput#n"); dient dem Verstecken über HidHide.</summary>
+    public string? DevicePath { get; init; }
+
     public int BatteryPercent { get; set; } = -1;
     public bool Charging { get; set; }
 
@@ -78,6 +81,7 @@ internal sealed class PhysicalPad
             HasRumble = rumble,
             Vendor = vid,
             Product = pid,
+            DevicePath = path,
             // Stabiler Schlüssel für "Eingaben übernehmen": Typ (GUID) + Seriennummer bzw. Gerätepfad.
             Key = $"{guidText}|{serial ?? path ?? ("slot" + slot)}",
         };
@@ -166,5 +170,5 @@ internal sealed class PhysicalPad
 
     public PadSnapshot ToSnapshot(bool enabled) => new(
         Key, InstanceId, PadNames.Friendly(Kind, RawName), RawName, Kind, Connection,
-        BatteryPercent, Charging, HasRumble, enabled, XInputSlot, Vendor, Product);
+        BatteryPercent, Charging, HasRumble, enabled, XInputSlot, Vendor, Product, DevicePath, IsXInput);
 }

@@ -25,7 +25,9 @@ Four Claude models with fixed, complementary roles. Each member rated independen
 |---|---|---|---|---|---|
 | [1](design/round-1.md) | 7 | 7 | 6 | 6 | contradictory states, duplication, jargon, widths, contrast, no character |
 | [2](design/round-2.md) | 8 | 8.5 | 8 | 8 | button hierarchy, empty success dialog, app vs. virtual-controller symbols, tray at 16 px |
-| [3](design/round-3.md) | **9** | **9** | **9** | **9** | ✅ exit criterion reached |
+| [3](design/round-3.md) | **9** | **9** | **9** | **9** | exit criterion reached |
+
+Version 1.3 (hiding controllers) went through two more rounds until every member rated 9/10 again: [v1.3-hide-controllers.md](v1.3-hide-controllers.md).
 
 The council reviewed the German UI. The English translation added later uses the same layout and was checked via `--snapshot` (files prefixed `en-`).
 

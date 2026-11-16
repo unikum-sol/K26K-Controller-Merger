@@ -13,6 +13,7 @@
 │   ├ SetupWindow (ViGEmBus wizard)              │     └─► atomic mailbox                    │
 │   ├ MainViewModel ◄── EngineSnapshot (10 Hz) ──┤                                           │
 │   ├ Loc (DE/EN, live switching)                │                                           │
+│   ├ HideService (own worker) ──► HidHide       │                                           │
 │   └ SettingsStore ── MergeOptions (atomic) ───►├ SDL3 (custom P/Invoke layer)              │
 │                                                │   XInput · HIDAPI (PS4/PS5/Switch) · DInput│
 │                                                └ MergeEngine (ControllerMerger.Core)        │
@@ -23,9 +24,9 @@
 
 | Project | Contents | Dependencies |
 |---|---|---|
-| `src/ControllerMerger.Core` | `GamepadState`, `MergeEngine` (OR, max deflection, dead zone, SOCD, inversion), `AppSettings` (JSON, source generator) | none |
-| `src/ControllerMerger` | WPF app: engine, SDL interop, ViGEm, tray, windows, setup, design system, localization | Core, Nefarius.ViGEm.Client, Hardcodet.NotifyIcon.Wpf, SDL3.dll |
-| `tests/ControllerMerger.Tests` | xUnit tests for merge logic and settings | Core |
+| `src/ControllerMerger.Core` | `GamepadState`, `MergeEngine` (OR, max deflection, dead zone, SOCD, inversion), `AppSettings` (JSON, source generator), `HidePlanner` (pure HidHide reconciliation rules) | none |
+| `src/ControllerMerger` | WPF app: engine, SDL interop, ViGEm, HidHide, tray, windows, setup, design system, localization | Core, Nefarius.ViGEm.Client, Hardcodet.NotifyIcon.Wpf, SDL3.dll |
+| `tests/ControllerMerger.Tests` | xUnit tests for merge logic, settings and hide reconciliation | Core |
 
 ## Data flow per tick
 
@@ -60,12 +61,24 @@ To Windows, the virtual Xbox 360 controller is a real XInput device. Without fil
 | Rumble | driver thread → `Interlocked` mailbox → input thread |
 | UI status | `EngineSnapshot` (immutable); UI timer at 4 Hz only while a window is open |
 | Localization | immutable string table + volatile language flag; safe to read from any thread |
+| HidHide | `HideService` worker only; it receives snapshots and settings through a lock and publishes an immutable per-pad result |
 
 ## Localization
 
 - `UI/Strings.cs` holds every user-facing text in German and English. `UI/Loc.cs` provides `Loc.T(key)` / `Loc.F(key, args)` for code and the `{ui:T Key}` markup extension for XAML.
 - Switching the language raises `Item[]` on the `Loc` singleton, so all XAML bindings update immediately without a restart. View models recompute their computed texts via `Loc.Changed`.
 - The default follows the Windows display language (German if it's German, English otherwise). An explicit choice is stored in `settings.json`.
+
+## Hiding controllers (HidHide)
+
+Since 1.3, every controller can be hidden from games and other apps while the app runs. Details and the council record: [v1.3-hide-controllers.md](council/v1.3-hide-controllers.md).
+
+- `HidHide/HidHideClient.cs`: own P/Invoke layer for the control device `\.\HidHide` (no administrator rights needed). The device is opened only briefly per session; list changes are read-modify-write.
+- `HidHide/DeviceResolver.cs`: maps controllers to Windows instance IDs. HID/DirectInput controllers via the SDL device path; XInput controllers via XUSB enumeration and the player LED (slot).
+- `HidHide/HideService.cs`: worker thread. Order per session: allow the app's own EXE first, switch hiding on if needed, then reconcile the device list. A journal records what the app added, before each write; quitting, logoff and shutdown remove exactly these entries, and the next start cleans up after a crash.
+- `Core/HidePlanner.cs`: pure rules (only remove own entries, never touch foreign ones, HID IDs may be hidden in advance, all other IDs only while connected and mapped).
+- The own virtual controller is never hidden: a ViGEm device in the virtual controller's slot or with an unknown slot is excluded, and without a reliably detected own controller no XInput controller is mapped (fail-closed).
+- Installing HidHide reuses the pinned installer flow (`Setup/DriverInstaller.cs`): HidHide 1.5.230, SHA-256 and publisher signature checked, started with UAC.
 
 ## Error handling
 
@@ -78,6 +91,7 @@ To Windows, the virtual Xbox 360 controller is a real XInput device. Without fil
 ## Extensibility
 
 - **Other output backend** (ViGEmBus is end-of-life): `Engine/VirtualPad.cs` is the only place that touches the driver.
+- **HidHide session list:** once a HidHide release supports the per-process session list, `HideService` can switch to it and drop the journal.
 - **New merge rules:** `MergeEngine` is a pure, testable function; `MergeOptions` can grow new fields.
 - **New controller families:** `PhysicalPad.Classify` + `PadNames` (display name, family, monogram).
 - **Design:** new colors only as tokens in both theme files; controls only in `Themes/Controls.xaml`.

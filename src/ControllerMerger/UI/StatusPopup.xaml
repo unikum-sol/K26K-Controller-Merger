@@ -21,13 +21,12 @@
           <TextBlock x:Name="name" Style="{StaticResource Text.Strong}" Text="{Binding Name}" />
           <TextBlock Style="{StaticResource Text.Secondary}" Text="{Binding Detail}" Margin="0,2,0,0" />
         </StackPanel>
-        <TextBlock x:Name="paused" Grid.Column="2" Style="{StaticResource Text.Secondary}" Text="{ui:T Paused}"
-                   VerticalAlignment="Center" Visibility="Collapsed" />
+        <TextBlock Grid.Column="2" Style="{StaticResource Text.Secondary}" Text="{Binding PopupTag}"
+                   VerticalAlignment="Center" Visibility="{Binding HasPopupTag, Converter={StaticResource BoolToVis}}" />
       </Grid>
       <DataTemplate.Triggers>
         <DataTrigger Binding="{Binding IsEnabled}" Value="False">
           <Setter TargetName="name" Property="Foreground" Value="{DynamicResource Brush.TextSecondary}" />
-          <Setter TargetName="paused" Property="Visibility" Value="Visible" />
         </DataTrigger>
       </DataTemplate.Triggers>
     </DataTemplate>

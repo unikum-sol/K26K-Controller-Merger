@@ -33,7 +33,7 @@ Full record with all scores: [`docs/council/architecture-council.md`](council/ar
 - **Installer security:** version, SHA-256 and signer pinned (unanimous)
 
 ### Feature decisions (made by the user)
-- No HidHide; a hint in the settings and the README instead
+- No HidHide; a hint in the settings and the README instead (1.0; since 1.3, controllers can be hidden in the app, see [v1.3-hide-controllers.md](council/v1.3-hide-controllers.md))
 - Stick merge mode switchable, default *whole stick*
 - Individual controllers can be paused (no per-controller settings, no live view, no connection notifications)
 - German and English UI (switchable in the settings); English README and docs
@@ -66,4 +66,4 @@ Process and all rounds: [`docs/council/design-council.md`](council/design-counci
 - Design suggestions for 10/10 (see [round 3](council/design/round-3.md))
 - Code signing the EXE to avoid SmartScreen warnings
 
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Generated with [Claude Code](https://claude.com/claude-code)

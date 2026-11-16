@@ -13,23 +13,34 @@ public sealed class InstallerVerificationException(string message) : Exception(m
 /// <summary>Bewusster Abbruch mit nutzerfreundlicher Meldung (UAC abgelehnt, Installer abgebrochen).</summary>
 public sealed class SetupCancelledException(string message) : OperationCanceledException(message);
 
+/// <summary>Eine fest gepinnte Treiber-Installationsdatei (Version, Download-Adresse, SHA-256).</summary>
+internal sealed record InstallerSpec(string Name, string Version, string Sha256, string FileName, Uri DownloadUri)
+{
+    public static readonly InstallerSpec ViGEmBus = new("ViGEmBus", "1.22.0",
+        "89220a7865076b342892f98865f3499fb7c4cfd673159e89d352c360fd014c6a",
+        "ViGEmBus_1.22.0_x64_x86_arm64.exe",
+        new("https://github.com/nefarius/ViGEmBus/releases/download/v1.22.0/ViGEmBus_1.22.0_x64_x86_arm64.exe"));
+
+    /// <summary>HidHide 1.5.230 – neueste Version mit offiziellem GitHub-Release.</summary>
+    public static readonly InstallerSpec HidHide = new("HidHide", "1.5.230",
+        "f4bbbcb82e6258641b887c74bc81c4c5f66e4aa811808dfc304347687b7605f6",
+        "HidHide_1.5.230_x64.exe",
+        new("https://github.com/nefarius/HidHide/releases/download/v1.5.230.0/HidHide_1.5.230_x64.exe"));
+}
+
 /// <summary>
-/// Lädt den ViGEmBus-Installer, verifiziert ihn und startet ihn mit Administratorrechten.
+/// Lädt einen Treiber-Installer (ViGEmBus oder HidHide), verifiziert ihn und startet ihn mit Administratorrechten.
 /// Sicherheitskonzept (Architektur-Council, einstimmig):
 /// <list type="bullet">
-/// <item>Version FEST gepinnt – niemals "latest" (ViGEmBus ist EOL, das Repo archiviert).</item>
+/// <item>Version FEST gepinnt – niemals "latest".</item>
 /// <item>SHA-256 der exakten Datei gepinnt.</item>
 /// <item>Zusätzlich gültige Authenticode-Signatur mit erwartetem Herausgeber.</item>
 /// <item>Download in ein frisches, eigenes Temp-Verzeichnis; Start erst nach erfolgreicher Prüfung.</item>
 /// </list>
 /// </summary>
-internal static class ViGEmInstaller
+internal static class DriverInstaller
 {
-    public const string Version = "1.22.0";
-    public const string Sha256 = "89220a7865076b342892f98865f3499fb7c4cfd673159e89d352c360fd014c6a";
     public const string ExpectedSigner = "CN=Nefarius Software Solutions e.U.";
-    public static readonly Uri DownloadUri =
-        new($"https://github.com/nefarius/ViGEmBus/releases/download/v{Version}/ViGEmBus_{Version}_x64_x86_arm64.exe");
 
     /// <summary>Installer-Rückgabewerte (MSI/Burn-Konvention).</summary>
     public const int ExitSuccess = 0;
@@ -37,15 +48,15 @@ internal static class ViGEmInstaller
     public const int ExitRebootInitiated = 1641;
     public const int ExitUserCancel = 1602;
 
-    public static async Task<string> DownloadAsync(IProgress<double> progress, CancellationToken ct)
+    public static async Task<string> DownloadAsync(InstallerSpec spec, IProgress<double> progress, CancellationToken ct)
     {
         string dir = Path.Combine(Path.GetTempPath(), "K26KControllerMerger-Setup-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(dir);
-        string file = Path.Combine(dir, $"ViGEmBus_{Version}_x64_x86_arm64.exe");
+        string file = Path.Combine(dir, spec.FileName);
 
         using var http = new HttpClient { Timeout = TimeSpan.FromMinutes(5) };
         http.DefaultRequestHeaders.UserAgent.ParseAdd("K26KControllerMerger-Setup/1.0");
-        using var response = await http.GetAsync(DownloadUri, HttpCompletionOption.ResponseHeadersRead, ct);
+        using var response = await http.GetAsync(spec.DownloadUri, HttpCompletionOption.ResponseHeadersRead, ct);
         response.EnsureSuccessStatusCode();
 
         long total = response.Content.Headers.ContentLength ?? -1;
@@ -61,17 +72,17 @@ internal static class ViGEmInstaller
             if (total > 0) progress.Report((double)read / total);
         }
         progress.Report(1);
-        Log.Info($"ViGEmBus-Installer geladen: {read} Bytes");
+        Log.Info($"{spec.Name}-Installer geladen: {read} Bytes");
         return file;
     }
 
     /// <summary>Wirft <see cref="InstallerVerificationException"/>, wenn Hash oder Signatur nicht stimmen.</summary>
-    public static void Verify(string path)
+    public static void Verify(InstallerSpec spec, string path)
     {
         string actual;
         using (var stream = File.OpenRead(path))
             actual = Convert.ToHexStringLower(SHA256.HashData(stream));
-        if (!string.Equals(actual, Sha256, StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(actual, spec.Sha256, StringComparison.OrdinalIgnoreCase))
             throw new InstallerVerificationException(UI.Loc.T("ErrHash"));
 
         if (!Native.HasValidAuthenticodeSignature(path))
@@ -83,7 +94,7 @@ internal static class ViGEmInstaller
         if (!cert.Subject.StartsWith(ExpectedSigner, StringComparison.OrdinalIgnoreCase))
             throw new InstallerVerificationException(UI.Loc.F("ErrPublisher", cert.Subject));
 
-        Log.Info("ViGEmBus-Installer verifiziert (SHA-256 + Authenticode).");
+        Log.Info($"{spec.Name}-Installer verifiziert (SHA-256 + Authenticode).");
     }
 
     /// <summary>
@@ -91,7 +102,7 @@ internal static class ViGEmInstaller
     /// </summary>
     /// <returns>Exit-Code des Installers.</returns>
     /// <exception cref="OperationCanceledException">UAC-Abfrage wurde abgelehnt.</exception>
-    public static async Task<int> RunElevatedAsync(string path, CancellationToken ct)
+    public static async Task<int> RunElevatedAsync(InstallerSpec spec, string path, CancellationToken ct)
     {
         Process? process;
         try
@@ -112,7 +123,7 @@ internal static class ViGEmInstaller
         using (process)
         {
             await process.WaitForExitAsync(ct);
-            Log.Info($"ViGEmBus-Installer beendet mit Code {process.ExitCode}");
+            Log.Info($"{spec.Name}-Installer beendet mit Code {process.ExitCode}");
             return process.ExitCode;
         }
     }

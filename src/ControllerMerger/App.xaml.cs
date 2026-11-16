@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Threading;
 using ControllerMerger.Core;
 using ControllerMerger.Engine;
+using ControllerMerger.HidHide;
 using ControllerMerger.Services;
 using ControllerMerger.Setup;
 using ControllerMerger.UI;
@@ -27,6 +28,7 @@ public partial class App : Application
     private EventWaitHandle? _showEvent;
     private SettingsStore? _store;
     private InputService? _engine;
+    private HideService? _hide;
     private TrayController? _tray;
     private MainViewModel? _vm;
     private SettingsWindow? _settings;
@@ -73,7 +75,13 @@ public partial class App : Application
             Log.Error("Unbehandelter UI-Fehler", ex.Exception);
             ex.Handled = true;
         };
-        AppDomain.CurrentDomain.UnhandledException += (_, ex) => Log.Error("Unbehandelter Fehler", ex.ExceptionObject as Exception);
+        AppDomain.CurrentDomain.UnhandledException += (_, ex) =>
+        {
+            Log.Error("Unbehandelter Fehler", ex.ExceptionObject as Exception);
+            if (ex.IsTerminating) _hide?.RestoreAll(); // versteckte Controller nicht "verlieren"
+        };
+        // Abmelden/Herunterfahren: OnExit läuft dann evtl. nicht mehr vollständig → hier sicher zurücksetzen.
+        SessionEnding += (_, _) => _hide?.RestoreAll();
 
         Log.Info($"Start {string.Join(' ', e.Args)}");
         _store = new SettingsStore();
@@ -104,10 +112,21 @@ public partial class App : Application
         // ---------------------------------------------------------- Engine + Tray
         _engine = new InputService();
         _engine.ApplySettings(_store.Current);
-        _engine.StatusChanged += s => Dispatcher.BeginInvoke(() => _tray?.Update(s));
+
+        // Verstecken über HidHide: eigener Worker, bekommt Controller-Liste und Einstellungen.
+        _hide = new HideService();
+        _hide.UpdateSettings(_store.Current);
+        _hide.Changed += () => Dispatcher.BeginInvoke(() => _vm?.RefreshHide());
+        _hide.Start();
+
+        _engine.StatusChanged += s =>
+        {
+            _hide.UpdatePads(s);
+            Dispatcher.BeginInvoke(() => _tray?.Update(s));
+        };
         _engine.Start();
 
-        _vm = new MainViewModel(_store, OpenSettings, () => Shutdown(), RepairDriver);
+        _vm = new MainViewModel(_store, OpenSettings, () => Shutdown(), RepairDriver, _hide);
         _vm.UpdateDriver(driver);
         _store.Changed += OnSettingsChanged;
 
@@ -174,6 +193,7 @@ public partial class App : Application
     private void OnSettingsChanged(AppSettings s)
     {
         _engine?.ApplySettings(s);
+        _hide?.UpdateSettings(s);
         Loc.SetLanguage(s.Language ?? Loc.SystemDefault); // no-op if unchanged; switches live otherwise
         if (s.Theme != _appliedTheme)
         {
@@ -190,6 +210,7 @@ public partial class App : Application
     protected override void OnExit(ExitEventArgs e)
     {
         _tray?.Dispose();
+        _hide?.Dispose(); // versteckte Controller wieder sichtbar machen
         _engine?.Dispose();
         _store?.Dispose();
         _showEvent?.Dispose();

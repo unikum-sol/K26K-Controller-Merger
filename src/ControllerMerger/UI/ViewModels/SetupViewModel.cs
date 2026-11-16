@@ -47,7 +47,7 @@ internal sealed class SetupViewModel : ObservableObject
     public SetupViewModel(DriverInfo driver, bool firstRun)
     {
         InstallSteps = Numbered(
-            (Loc.T("StepDownload"), Loc.F("StepDownloadDetail", ViGEmInstaller.Version)),
+            (Loc.T("StepDownload"), Loc.F("StepDownloadDetail", InstallerSpec.ViGEmBus.Version)),
             (Loc.T("StepVerify"), Loc.T("StepVerifyDetail")),
             (Loc.T("StepInstall"), Loc.T("StepInstallDetail")));
         PrimaryCommand = new RelayCommand(OnPrimary);
@@ -70,10 +70,10 @@ internal sealed class SetupViewModel : ObservableObject
     public ObservableCollection<SetupStep> RepairSteps => Driver.Status switch
     {
         DriverStatus.NotInstalled => Numbered(
-            (Loc.T("HintInstall"), Loc.F("HintInstallDetail", ViGEmInstaller.Version)),
+            (Loc.T("HintInstall"), Loc.F("HintInstallDetail", InstallerSpec.ViGEmBus.Version)),
             (Loc.T("HintRebootIfNeeded"), Loc.T("HintRebootIfNeededDetail"))),
         DriverStatus.VersionMismatch => Numbered(
-            (Loc.T("HintUpdate"), Loc.F("HintUpdateDetail", ViGEmInstaller.Version)),
+            (Loc.T("HintUpdate"), Loc.F("HintUpdateDetail", InstallerSpec.ViGEmBus.Version)),
             (Loc.T("HintReboot"), Loc.T("HintRebootAfterUpdate"))),
         _ => Numbered(
             (Loc.T("HintReboot"), Loc.T("HintRebootDetail")),
@@ -268,19 +268,19 @@ internal sealed class SetupViewModel : ObservableObject
             // 1) Download
             SetActiveStep(0);
             var download = InstallSteps[0];
-            installer = await ViGEmInstaller.DownloadAsync(new Progress<double>(p => download.Progress = p), ct);
+            installer = await DriverInstaller.DownloadAsync(InstallerSpec.ViGEmBus, new Progress<double>(p => download.Progress = p), ct);
 
             // 2) Prüfen
             SetActiveStep(1);
             InstallSteps[1].Indeterminate = true;
-            await Task.Run(() => ViGEmInstaller.Verify(installer), ct);
+            await Task.Run(() => DriverInstaller.Verify(InstallerSpec.ViGEmBus, installer), ct);
 
             // 3) Installieren
             SetActiveStep(2);
             var install = InstallSteps[2];
             install.Indeterminate = true;
-            int code = await ViGEmInstaller.RunElevatedAsync(installer, ct);
-            if (code == ViGEmInstaller.ExitUserCancel)
+            int code = await DriverInstaller.RunElevatedAsync(InstallerSpec.ViGEmBus, installer, ct);
+            if (code == DriverInstaller.ExitUserCancel)
                 throw new SetupCancelledException(Loc.T("ErrInstallerCancelled"));
 
             // 4) Kontrolle: Treiber kann einige Sekunden brauchen, bis er erreichbar ist.
@@ -295,11 +295,11 @@ internal sealed class SetupViewModel : ObservableObject
             SetActiveStep(3); // alle erledigt
             install.Detail = Loc.T("StepDone");
 
-            if (info.IsOk && code != ViGEmInstaller.ExitRebootRequired)
+            if (info.IsOk && code != DriverInstaller.ExitRebootRequired)
             {
                 GoTo(SetupStage.Success);
             }
-            else if (code is ViGEmInstaller.ExitRebootRequired or ViGEmInstaller.ExitRebootInitiated || info.Version is not null)
+            else if (code is DriverInstaller.ExitRebootRequired or DriverInstaller.ExitRebootInitiated || info.Version is not null)
             {
                 Autostart.ResumeAfterReboot();
                 GoTo(SetupStage.RebootRequired);
@@ -335,7 +335,7 @@ internal sealed class SetupViewModel : ObservableObject
         }
         finally
         {
-            ViGEmInstaller.Cleanup(installer);
+            DriverInstaller.Cleanup(installer);
             _cts.Dispose();
             _cts = null;
         }

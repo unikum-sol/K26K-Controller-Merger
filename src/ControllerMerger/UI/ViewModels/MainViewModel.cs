@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Windows.Input;
 using ControllerMerger.Core;
 using ControllerMerger.Engine;
+using ControllerMerger.HidHide;
 using ControllerMerger.Services;
 using ControllerMerger.Setup;
 
@@ -18,10 +19,27 @@ internal sealed class MainViewModel : ObservableObject
     private readonly SettingsStore _store;
     private EngineSnapshot _snapshot = EngineSnapshot.Initial;
     private DriverInfo _driver = new(DriverStatus.Unknown, null, "");
+    private readonly IHideSource? _hide;
 
-    public MainViewModel(SettingsStore store, Action openSettings, Action exit, Action? repairDriver = null)
+    public MainViewModel(SettingsStore store, Action openSettings, Action exit, Action? repairDriver = null,
+        IHideSource? hide = null)
     {
         _store = store;
+        _hide = hide;
+        InstallHidHideCommand = new RelayCommand(() => _ = InstallHidHideAsync(), () => !_hideInstalling);
+        RestartWindowsCommand = new RelayCommand(() =>
+        {
+            var answer = System.Windows.MessageBox.Show(Loc.T("HhRestartConfirm"), Loc.T("HhRestartButton"),
+                System.Windows.MessageBoxButton.OKCancel, System.Windows.MessageBoxImage.Warning,
+                System.Windows.MessageBoxResult.Cancel);
+            if (answer != System.Windows.MessageBoxResult.OK) return;
+            try
+            {
+                Services.Autostart.ResumeAfterReboot();
+                Process.Start(new ProcessStartInfo("shutdown.exe", "/r /t 0") { CreateNoWindow = true, UseShellExecute = false });
+            }
+            catch (Exception ex) { Log.Error("Neustart auslösen", ex); }
+        });
         OpenSettingsCommand = new RelayCommand(openSettings);
         ExitCommand = new RelayCommand(exit);
         RepairDriverCommand = new RelayCommand(() => repairDriver?.Invoke(), () => repairDriver is not null);
@@ -41,6 +59,8 @@ internal sealed class MainViewModel : ObservableObject
     public ICommand ExitCommand { get; }
     public ICommand OpenLogCommand { get; }
     public ICommand RepairDriverCommand { get; }
+    public ICommand InstallHidHideCommand { get; }
+    public ICommand RestartWindowsCommand { get; }
 
     public ObservableCollection<PadViewModel> Pads { get; } = [];
 
@@ -147,14 +167,15 @@ internal sealed class MainViewModel : ObservableObject
             var vm = Pads.FirstOrDefault(x => x.Key == p.Key);
             if (vm is null)
             {
-                vm = new PadViewModel(p.Key, SetPadEnabled);
+                vm = new PadViewModel(p.Key, SetPadEnabled, SetPadHidden);
                 Pads.Add(vm);
             }
-            vm.Update(p);
+            vm.Update(p, _hide?.Get(p.Key), HideStatus, S.HiddenDevices);
         }
         for (int i = 0; i < Pads.Count; i++) Pads[i].IsFirst = i == 0;
 
         foreach (var name in StatusProperties) Raise(name);
+        foreach (var name in HideProperties) Raise(name);
     }
 
     public void UpdateDriver(DriverInfo driver)
@@ -176,6 +197,123 @@ internal sealed class MainViewModel : ObservableObject
         s.DisabledDevices.Remove(key);
         if (!enabled) s.DisabledDevices.Add(key);
     });
+
+    private void SetPadHidden(string instanceId, bool hidden) => _store.Update(s =>
+    {
+        s.HiddenDevices.RemoveAll(id => string.Equals(id, instanceId, StringComparison.OrdinalIgnoreCase));
+        if (hidden) s.HiddenDevices.Add(instanceId);
+    });
+
+    // ------------------------------------------------------------------ Verstecken (HidHide)
+
+    private bool _hideInstalling;
+    private string? _hideInstallStep;
+    private string? _hideInstallError;
+
+    private HidHideStatus HideStatus => _hide?.Status ?? HidHideStatus.Unknown;
+
+    /// <summary>HidHide fehlt → Karte mit Erklärung und "HidHide installieren".</summary>
+    public bool ShowHideSetup => HasPads && (HideStatus == HidHideStatus.NotInstalled || _hideInstalling);
+
+    /// <summary>Installiert, aber erst nach einem Neustart aktiv.</summary>
+    public bool ShowHideRestart => HasPads && HideStatus == HidHideStatus.RestartRequired && !_hideInstalling;
+
+    /// <summary>HidHide ist vorhanden, Verstecken klappt aber gerade nicht (belegt, Speicherort, gesperrt).</summary>
+    public bool ShowHideProblem => HasPads && !_hideInstalling &&
+        (HideStatus == HidHideStatus.Busy || HideStatus == HidHideStatus.Ready && _hide?.ProblemKey is not null);
+
+    public string HideProblemText => Loc.T(_hide?.ProblemKey ?? "HhProblemBusy");
+
+    public bool HideInstalling => _hideInstalling;
+
+    public string HideInstallButtonText => _hideInstallStep ?? Loc.T("HhInstall");
+
+    public string? HideInstallError => _hideInstallError;
+    public bool HasHideInstallError => _hideInstallError is not null;
+
+    public string HidHideStatusText => HideStatus switch
+    {
+        HidHideStatus.Ready => Loc.T("HhStatusReady"),
+        HidHideStatus.NotInstalled => Loc.T("HhStatusNotInstalled"),
+        HidHideStatus.RestartRequired => Loc.T("HhStatusRestart"),
+        HidHideStatus.Busy => Loc.T("HhStatusBusy"),
+        _ => Loc.T("HhStatusUnknown"),
+    };
+
+    public bool HidHideOk => HideStatus == HidHideStatus.Ready;
+
+    /// <summary>Erklärung zum Verstecken nur, wenn es auch nutzbar ist.</summary>
+    public bool ShowHideFootnote => HasPads && HideStatus == HidHideStatus.Ready;
+
+    private static readonly string[] HideProperties =
+    [
+        nameof(ShowHideSetup), nameof(ShowHideRestart), nameof(ShowHideProblem), nameof(HideProblemText),
+        nameof(HideInstalling), nameof(HideInstallButtonText), nameof(HideInstallError), nameof(HasHideInstallError),
+        nameof(HidHideStatusText), nameof(HidHideOk), nameof(ShowHideFootnote),
+    ];
+
+    /// <summary>Neue Infos vom HideService (auf dem UI-Thread aufrufen).</summary>
+    public void RefreshHide() => Update(_snapshot);
+
+    private void SetInstallStep(string? step)
+    {
+        _hideInstallStep = step;
+        foreach (var name in HideProperties) Raise(name);
+    }
+
+    /// <summary>Gleicher abgesicherter Ablauf wie bei ViGEmBus: Download, SHA-256 + Signatur, Installation mit UAC.</summary>
+    private async Task InstallHidHideAsync()
+    {
+        if (_hideInstalling) return;
+        _hideInstalling = true;
+        _hideInstallError = null;
+        CommandManager.InvalidateRequerySuggested();
+        string? installer = null;
+        try
+        {
+            SetInstallStep(Loc.T("BtnDownloading"));
+            installer = await DriverInstaller.DownloadAsync(InstallerSpec.HidHide, new Progress<double>(_ => { }), CancellationToken.None);
+            SetInstallStep(Loc.T("BtnVerifying"));
+            await Task.Run(() => DriverInstaller.Verify(InstallerSpec.HidHide, installer));
+            SetInstallStep(Loc.T("BtnInstalling"));
+            int code = await DriverInstaller.RunElevatedAsync(InstallerSpec.HidHide, installer, CancellationToken.None);
+            if (code == DriverInstaller.ExitUserCancel)
+                _hideInstallError = Loc.T("ErrInstallerCancelled");
+            else if (code is not (DriverInstaller.ExitSuccess or DriverInstaller.ExitRebootRequired or DriverInstaller.ExitRebootInitiated))
+                _hideInstallError = Loc.F("HhInstallFailed", code);
+        }
+        catch (SetupCancelledException ex) { _hideInstallError = ex.Message; }
+        catch (System.Net.Http.HttpRequestException ex)
+        {
+            Log.Error("HidHide-Download", ex);
+            _hideInstallError = Loc.T("ErrDownload");
+        }
+        catch (InstallerVerificationException ex)
+        {
+            Log.Error("HidHide-Verifikation", ex);
+            _hideInstallError = ex.Message;
+        }
+        catch (Exception ex)
+        {
+            Log.Error("HidHide-Installation", ex);
+            _hideInstallError = ex.Message;
+        }
+        finally
+        {
+            DriverInstaller.Cleanup(installer);
+            _hideInstalling = false;
+            SetInstallStep(null);
+            CommandManager.InvalidateRequerySuggested();
+        }
+
+        // Der Treiber braucht nach der Installation evtl. ein paar Sekunden, bis sein Steuergerät erreichbar ist.
+        for (int i = 0; i < 6 && _hide is not null; i++)
+        {
+            _hide.Refresh();
+            await Task.Delay(1000);
+            if (_hide.Status == HidHideStatus.Ready) break;
+        }
+    }
 
     // ------------------------------------------------------------------ Einstellungen
 

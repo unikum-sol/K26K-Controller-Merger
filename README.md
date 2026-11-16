@@ -16,6 +16,7 @@
   - Dead zone for sticks and triggers, applied per controller *before* merging, so drift on an idle controller never wins
 - **Rumble** from games is forwarded to all active controllers.
 - **Pause individual controllers:** they stay connected but no longer steer.
+- **Hide controllers from games:** one switch per controller hides it from games and other apps through [HidHide](https://github.com/nefarius/HidHide) while the app is running, so games only see the merged controller and never react twice. K26K Controller Merger keeps reading hidden controllers. If HidHide is missing, the app installs it on request (pinned version 1.5.230, verified by SHA-256 and digital signature).
 - **Supported controllers:** XInput (Xbox 360/One/Series), DualShock 4, DualSense, Switch Pro, Joy-Cons, generic DirectInput/HID gamepads, and Switch 2 controllers (see below).
 - **Low latency:** polling every 1, 2, 4 (default) or 8 ms with a high-resolution timer, at about 0.03 % CPU when idle (measured).
 - **Tray app:** right-click shows the status, double-click opens the settings. Light and dark mode follow Windows.
@@ -32,7 +33,7 @@ K26K Controller Merger is a natural fit when you stream games from your Windows 
 - **Steady controller for the game.** Moonlight clients connect and disconnect while the merged controller stays put. Games don't lose their controller when a streaming session ends or a pad reconnects, and controller order in Windows doesn't matter anymore.
 - **Low overhead on the streaming host.** About 0.03 % CPU when idle and a 4 ms default polling interval add practically nothing to encoding load or input latency.
 
-**Tip:** the game may see Sunshine's per-client controllers in addition to the merged one. Select the virtual Xbox 360 controller in the game. If needed, hide the other controllers with [HidHide](https://github.com/nefarius/HidHide) and add `K26KControllerMerger.exe` to HidHide's application list so it can still read them. Note that XInput has 4 slots in total: Sunshine's controllers, local Xbox controllers and the merged controller share them.
+**Tip:** the game may see Sunshine's per-client controllers in addition to the merged one. Turn on **Hide** for them in the overview: games then only see the merged controller, while K26K Controller Merger keeps reading them. Restart a game that was already running so it notices. Note that XInput has 4 slots in total: Sunshine's controllers, local Xbox controllers and the merged controller share them.
 
 
 ## Installation (users)
@@ -64,11 +65,18 @@ If the driver is missing or broken on a later start, a repair view with step-by-
 
 | Page | Options |
 |---|---|
-| Overview | Virtual controller status, "controlled by", list of all controllers with a switch to pause each one |
+| Overview | Virtual controller status, "controlled by", list of all controllers with switches to pause ("Use input") or hide ("Hide") each one |
 | Input | Stick merge mode, dead zone (sticks/triggers), invert axes, polling interval |
-| General | Forward rumble, start with Windows, color scheme, language (Deutsch/English), technical details, help, log file |
+| General | Forward rumble, start with Windows, color scheme, language (Deutsch/English), technical details (including the HidHide status), help, log file |
 
-Settings are stored in `%APPDATA%\K26KControllerMerger\settings.json`, the log in `%LOCALAPPDATA%\K26KControllerMerger\log.txt`.
+Settings are stored in `%APPDATA%\K26KControllerMerger\settings.json`, the log in `%LOCALAPPDATA%\K26KControllerMerger\log.txt`. While controllers are hidden, `%LOCALAPPDATA%\K26KControllerMerger\hidhide.json` records which HidHide entries the app added, so they can be removed reliably.
+
+### Hiding controllers
+
+- Hidden controllers are invisible to games and other apps **only while K26K Controller Merger is running**. Quitting, logging off or shutting down makes them visible again; the next start hides them again.
+- Games, Steam and other apps that were already running keep seeing a controller until you restart them.
+- The app never hides its own virtual controller and never touches HidHide entries made by you or other tools.
+- A controller that can't be identified reliably (for example several pads on one wireless receiver) shows "Can't be hidden" instead of the switch.
 
 ## Building (developers)
 
@@ -112,7 +120,10 @@ powershell -ExecutionPolicy Bypass -File tools/fetch-sdl.ps1
 
 | Problem | Solution |
 |---|---|
-| **A game reacts twice** | The game sees the real controllers in addition to the virtual one. Select the virtual Xbox 360 controller in the game. If that doesn't help, hide the real controllers with [HidHide](https://github.com/nefarius/HidHide). |
+| **A game reacts twice** | The game sees the real controllers in addition to the virtual one. Select the virtual Xbox 360 controller in the game, or turn on **Hide** for the real controllers in the overview and restart the game. |
+| A hidden controller still works in a game | The game (or Steam) was already running when you hid it. Restart the game or Steam. |
+| "HidHide is busy" | The HidHide configuration app is open. Close it; the app continues automatically. |
+| Controllers stay hidden after the app was force-closed | Start K26K Controller Merger again: it cleans up its own HidHide entries on startup. |
 | PlayStation/Switch controller not detected while Steam is running | Steam Input or DS4Windows can hold the device exclusively. Disable Steam Input for that device or close the other tool. |
 | "The controller driver is not running" | Restart Windows. Then reinstall the driver from the wizard and check whether Memory Integrity or an antivirus is blocking it. |
 | More than 3 Xbox controllers | XInput only has 4 slots, and the virtual controller uses one of them. |
@@ -126,6 +137,7 @@ SDL 3.4 includes a HIDAPI driver for Switch 2 controllers, and K26K Controller M
 - [Architecture](docs/ARCHITECTURE.md): threads, data flow, feedback-loop protection, extensibility
 - [Architecture council](docs/council/architecture-council.md): language, libraries, UI framework, distribution and security, with scores
 - [Design council](docs/council/design-council.md): three iteration rounds until every member rated 9/10
+- [Version 1.3: hiding controllers](docs/council/v1.3-hide-controllers.md): architecture and design council for the HidHide integration, plus the hardware test
 
 
 **In short:**
@@ -147,3 +159,4 @@ K26K Controller Merger is licensed under the [GNU Affero General Public License 
 | [Nefarius.ViGEm.Client](https://github.com/nefarius/ViGEm.NET) | MIT |
 | [Hardcodet.NotifyIcon.Wpf](https://github.com/hardcodet/wpf-notifyicon) | MIT |
 | [ViGEmBus](https://github.com/nefarius/ViGEmBus) (installed at runtime, not bundled) | BSD-3-Clause |
+| [HidHide](https://github.com/nefarius/HidHide) (installed on request at runtime, not bundled) | MIT |

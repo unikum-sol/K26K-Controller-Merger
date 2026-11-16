@@ -14,7 +14,7 @@
   </WindowChrome.WindowChrome>
 
   <Window.Resources>
-    <!-- Controller-Zeile in der Übersicht: Kachel 40 · Abstand 16 · Name/Details · Schalter -->
+    <!-- Controller-Zeile in der Übersicht: Kachel 40 · Abstand 16 · Name/Details · zwei beschriftete Schalter -->
     <DataTemplate x:Key="PadRow">
       <StackPanel>
         <Border x:Name="sep" Style="{StaticResource Divider}" Margin="76,0,0,0" />
@@ -28,9 +28,21 @@
           <StackPanel Grid.Column="1" Margin="16,0,16,0" VerticalAlignment="Center">
             <TextBlock x:Name="name" Style="{StaticResource Text.Strong}" Text="{Binding Name}" />
             <TextBlock x:Name="detail" Style="{StaticResource Text.Secondary}" Text="{Binding Detail}" Margin="0,3,0,0" />
+            <TextBlock Style="{StaticResource Text.Caption}" Text="{ui:T PadNotHideable}" Margin="0,3,0,0" TextWrapping="Wrap"
+                       Visibility="{Binding ShowNotHideable, Converter={StaticResource BoolToVis}}" />
           </StackPanel>
-          <CheckBox Grid.Column="2" Style="{StaticResource Toggle.OnOff}" IsChecked="{Binding IsEnabled}"
-                    AutomationProperties.Name="{Binding Name}" ToolTip="{ui:T PadToggleTip}" />
+          <!-- Beschriftete Schalter; feste Labelbreite, damit Beschriftungen und Schalter bündig stehen -->
+          <StackPanel Grid.Column="2" VerticalAlignment="Center">
+            <CheckBox Style="{StaticResource Toggle}" IsChecked="{Binding IsEnabled}" ToolTip="{ui:T PadToggleTip}"
+                      AutomationProperties.Name="{ui:T PadUseInput}">
+              <TextBlock Text="{ui:T PadUseInput}" Width="80" />
+            </CheckBox>
+            <CheckBox Style="{StaticResource Toggle}" IsChecked="{Binding IsHidden}" Margin="0,8,0,0" ToolTip="{Binding HideTip}"
+                      AutomationProperties.Name="{ui:T PadHide}"
+                      Visibility="{Binding ShowHideSwitch, Converter={StaticResource BoolToVis}}">
+              <TextBlock Text="{ui:T PadHide}" Width="80" />
+            </CheckBox>
+          </StackPanel>
         </Grid>
       </StackPanel>
       <DataTemplate.Triggers>
@@ -181,6 +193,74 @@
                          VerticalAlignment="Bottom" Margin="0,0,2,11" />
             </Grid>
 
+            <!-- Verstecken (HidHide): genau eine Karte je Zustand, nur wenn Controller da sind -->
+            <Border Style="{StaticResource Card}" Padding="20,16" Margin="0,0,0,12"
+                    Visibility="{Binding ShowHideSetup, Converter={StaticResource BoolToVis}}">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="40" />
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <!-- Auge mit Querstrich (Glyphe fehlt unter Windows 10, daher zusammengesetzt) -->
+                <Border Style="{StaticResource IconTile}" VerticalAlignment="Top">
+                  <Grid Width="18" Height="18">
+                    <TextBlock Style="{StaticResource Icon}" Text="&#xE890;" FontSize="16" />
+                    <Line X1="2" Y1="16" X2="16" Y2="2" StrokeThickness="3.5" Stroke="{DynamicResource Brush.AccentSubtle}" />
+                    <Line X1="2" Y1="16" X2="16" Y2="2" StrokeThickness="1.4"
+                          Stroke="{Binding (TextElement.Foreground), RelativeSource={RelativeSource AncestorType=Border}}" />
+                  </Grid>
+                </Border>
+                <StackPanel Grid.Column="1" Margin="16,0,16,0" VerticalAlignment="Center">
+                  <TextBlock Style="{StaticResource Text.Strong}" Text="{ui:T HhSetupTitle}" />
+                  <TextBlock Style="{StaticResource Text.Wrap}" Text="{ui:T HhSetupText}" Margin="0,3,0,0" />
+                  <TextBlock Style="{StaticResource Text.Caption}" Text="{ui:T HhSetupCaption}" Margin="0,6,0,0" TextWrapping="Wrap" />
+                  <TextBlock Style="{StaticResource Text.Wrap}" Text="{Binding HideInstallError}" Margin="0,6,0,0"
+                             Foreground="{DynamicResource Brush.Danger}"
+                             Visibility="{Binding HasHideInstallError, Converter={StaticResource BoolToVis}}" />
+                </StackPanel>
+                <Button Grid.Column="2" Style="{StaticResource Button.Primary}" Content="{Binding HideInstallButtonText}"
+                        Command="{Binding InstallHidHideCommand}" VerticalAlignment="Center" />
+              </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Padding="20,16" Margin="0,0,0,12"
+                    Visibility="{Binding ShowHideRestart, Converter={StaticResource BoolToVis}}">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="40" />
+                  <ColumnDefinition Width="*" />
+                  <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Border Style="{StaticResource IconTile}" VerticalAlignment="Top" Background="{DynamicResource Brush.WarningSubtle}"
+                        TextElement.Foreground="{DynamicResource Brush.Warning}">
+                  <TextBlock Style="{StaticResource Icon}" Text="&#xE777;" FontSize="16" />
+                </Border>
+                <StackPanel Grid.Column="1" Margin="16,0,16,0" VerticalAlignment="Center">
+                  <TextBlock Style="{StaticResource Text.Strong}" Text="{ui:T HhRestartTitle}" />
+                  <TextBlock Style="{StaticResource Text.Wrap}" Text="{ui:T HhRestartText}" Margin="0,3,0,0" />
+                </StackPanel>
+                <Button Grid.Column="2" Style="{StaticResource Button}" Content="{ui:T HhRestartButton}"
+                        Command="{Binding RestartWindowsCommand}" VerticalAlignment="Center" />
+              </Grid>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Padding="20,16" Margin="0,0,0,12"
+                    Visibility="{Binding ShowHideProblem, Converter={StaticResource BoolToVis}}">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="40" />
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Style="{StaticResource Icon}" Text="&#xE7BA;" FontSize="18" Foreground="{DynamicResource Brush.Warning}"
+                           VerticalAlignment="Top" Margin="0,2,0,0" />
+                <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
+                  <TextBlock Style="{StaticResource Text.Strong}" Text="{ui:T HhProblemTitle}" />
+                  <TextBlock Style="{StaticResource Text.Wrap}" Text="{Binding HideProblemText}" Margin="0,3,0,0" />
+                </StackPanel>
+              </Grid>
+            </Border>
+
             <Border Style="{StaticResource Card.List}" Visibility="{Binding HasPads, Converter={StaticResource BoolToVis}}">
               <ItemsControl ItemsSource="{Binding Pads}" ItemTemplate="{StaticResource PadRow}" Focusable="False" />
             </Border>
@@ -201,6 +281,9 @@
             <TextBlock Style="{StaticResource Text.Caption}" Margin="2,12,0,0" TextWrapping="Wrap"
                        Visibility="{Binding HasPads, Converter={StaticResource BoolToVis}}"
                        Text="{ui:T OvFootnote}" />
+            <TextBlock Style="{StaticResource Text.Caption}" Margin="2,4,0,0" TextWrapping="Wrap"
+                       Visibility="{Binding ShowHideFootnote, Converter={StaticResource BoolToVis}}"
+                       Text="{ui:T OvFootnoteHide}" />
             </StackPanel>
           </StackPanel>
 
@@ -408,7 +491,7 @@
               </StackPanel>
             </Border>
 
-<TextBlock Style="{StaticResource Text.Section}" Text="{ui:T GenTech}" />
+            <TextBlock Style="{StaticResource Text.Section}" Text="{ui:T GenTech}" />
             <Border Style="{StaticResource Card.List}">
               <StackPanel>
                 <ui:SettingRow Title="{ui:T GenDriver}" Description="{ui:T GenDriverDesc}">
@@ -426,6 +509,24 @@
                       </Ellipse.Style>
                     </Ellipse>
                     <TextBlock Style="{StaticResource Text}" Text="{Binding DriverVersionText}" />
+                  </StackPanel>
+                </ui:SettingRow>
+                <Border Style="{StaticResource Divider}" />
+                <ui:SettingRow Title="{ui:T GenHidHide}" Description="{ui:T GenHidHideDesc}">
+                  <StackPanel Orientation="Horizontal">
+                    <Ellipse Width="7" Height="7" Margin="0,1,8,0" VerticalAlignment="Center">
+                      <Ellipse.Style>
+                        <Style TargetType="Ellipse">
+                          <Setter Property="Fill" Value="{DynamicResource Brush.Success}" />
+                          <Style.Triggers>
+                            <DataTrigger Binding="{Binding HidHideOk}" Value="False">
+                              <Setter Property="Fill" Value="{DynamicResource Brush.TextTertiary}" />
+                            </DataTrigger>
+                          </Style.Triggers>
+                        </Style>
+                      </Ellipse.Style>
+                    </Ellipse>
+                    <TextBlock Style="{StaticResource Text}" Text="{Binding HidHideStatusText}" />
                   </StackPanel>
                 </ui:SettingRow>
                 <Border Style="{StaticResource Divider}" />
