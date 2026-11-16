@@ -127,7 +127,7 @@ powershell -ExecutionPolicy Bypass -File tools/fetch-sdl.ps1
 | PlayStation/Switch controller not detected while Steam is running | Steam Input or DS4Windows can hold the device exclusively. Disable Steam Input for that device or close the other tool. |
 | "The controller driver is not running" | Restart Windows. Then reinstall the driver from the wizard and check whether Memory Integrity or an antivirus is blocking it. |
 | More than 3 Xbox controllers | XInput only has 4 slots, and the virtual controller uses one of them. |
-| SmartScreen warning | The EXE is not code-signed. |
+| SmartScreen warning | Releases up to 1.3 are not code-signed. Signed releases can also show a warning for the first downloads until SmartScreen has built up reputation. |
 
 ### Switch 2 controllers
 SDL 3.4 includes a HIDAPI driver for Switch 2 controllers, and K26K Controller Merger enables it. According to the SDL release notes, wired support requires libusb. On Windows that means a `libusb-1.0.dll` next to the EXE and a WinUSB driver for the device.
@@ -146,6 +146,12 @@ SDL 3.4 includes a HIDAPI driver for Switch 2 controllers, and K26K Controller M
 - **Dedicated input thread** with MMCSS, a high-resolution timer and an allocation-free hot path.
 - **Feedback-loop protection:** the virtual controller's own XInput slot is detected and never read back.
 - **Self-contained single file:** users need nothing but the EXE.
+
+## Code signing
+
+Free code signing provided by [SignPath.io](https://about.signpath.io), certificate by [SignPath Foundation](https://signpath.org).
+
+Release builds are created by GitHub Actions on GitHub-hosted runners directly from this repository and signed through SignPath. Releases up to and including 1.3 are not signed yet. Details: [code signing policy](CODE_SIGNING_POLICY.md) and [releasing](docs/RELEASING.md).
 
 ## License
 
