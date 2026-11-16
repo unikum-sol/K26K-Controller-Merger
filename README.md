@@ -137,7 +137,7 @@ SDL 3.4 includes a HIDAPI driver for Switch 2 controllers, and K26K Controller M
 - [Architecture](docs/ARCHITECTURE.md): threads, data flow, feedback-loop protection, extensibility
 - [Architecture council](docs/council/architecture-council.md): language, libraries, UI framework, distribution and security, with scores
 - [Design council](docs/council/design-council.md): three iteration rounds until every member rated 9/10
-- [Version 1.3: hiding controllers](docs/council/v1.3-hide-controllers.md): architecture and design council for the HidHide integration, plus the hardware test
+- [Version 1.3: hiding controllers](docs/council/v1.3-hide-controllers.md): architecture and design council for the HidHide integration
 
 
 **In short:**
