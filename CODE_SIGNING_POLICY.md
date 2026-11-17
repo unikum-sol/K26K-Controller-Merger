@@ -1,6 +1,6 @@
 # Code signing policy
 
-Free code signing provided by [SignPath.io](https://about.signpath.io), certificate by [SignPath Foundation](https://signpath.org).
+Code signing is not active yet. Current releases are not signed. This policy describes how signing will work once the project is accepted into the [SignPath Foundation](https://signpath.org) program.
 
 ## What is signed
 

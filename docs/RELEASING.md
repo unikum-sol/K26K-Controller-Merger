@@ -1,6 +1,6 @@
 # Releasing and code signing
 
-Release builds are produced by GitHub Actions on GitHub-hosted runners and signed through [SignPath](https://about.signpath.io) with a certificate of the [SignPath Foundation](https://signpath.org) (free for open source projects). See the [code signing policy](../CODE_SIGNING_POLICY.md).
+Release builds are produced by GitHub Actions on GitHub-hosted runners. Signing through [SignPath](https://about.signpath.io) with a certificate of the [SignPath Foundation](https://signpath.org) (free for open source projects) is prepared but not active: the first application was declined because the project did not yet have enough public visibility. Reapply once it has gained more adoption. See the [code signing policy](../CODE_SIGNING_POLICY.md).
 
 ## Workflows
 
