@@ -1,6 +1,6 @@
 # K26K Controller Merger
 
-**All your gamepads as one single Xbox 360 controller.** K26K Controller Merger permanently creates a virtual Xbox 360 controller through ViGEmBus and merges the input of every connected controller into it. It's ideal for helping a child on a second controller: both of you steer the same character at the same time. And also for moonlight streaming, when you know you know
+**All your gamepads as one single Xbox 360 controller.** K26K Controller Merger permanently creates a virtual Xbox 360 controller through ViGEmBus and merges the input of every connected controller into it. It's ideal for helping a child on a second controller: both of you steer the same character at the same time. And also for moonlight/sunshine game streaming, when you know you know
 
 ![Overview](docs/design/screenshots/en-settings-overview-dark.png)
 
